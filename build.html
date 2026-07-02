@@ -639,7 +639,7 @@ a{color:inherit;text-decoration:none;}
   function renderConverge(el){
     var g=el.querySelector('#convG'); g.innerHTML='';
     var XL='http://www.w3.org/1999/xlink';
-    var cx=600, cy=300, Rx=500, Ry=250;
+    var cx=600, cy=300, Rx=520, Ry=258;
     var iw=336, ih=198, ix=cx-iw/2, iy=cy-ih/2;
     var inputs=D.converge.inputs, n=inputs.length, pos=[];
     for(var i=0;i<n;i++){var a=-Math.PI/2+i*(2*Math.PI/n);pos.push({x:cx+Rx*Math.cos(a),y:cy+Ry*Math.sin(a),a:a});}
@@ -662,7 +662,7 @@ a{color:inherit;text-decoration:none;}
     // tool logos riding each line (one or more; tools repeat across components)
     pos.forEach(function(p,i){
       var tools=inputs[i].tools||[], k=tools.length; if(!k)return;
-      var L=Math.hypot(cx-p.x,cy-p.y), ux=(cx-p.x)/L, uy=(cy-p.y)/L, mid=logoPos(p.x,p.y), sz=28, gap=sz+5;
+      var L=Math.hypot(cx-p.x,cy-p.y), ux=(cx-p.x)/L, uy=(cy-p.y)/L, mid=logoPos(p.x,p.y), sz=28, gap=sz+18;
       tools.forEach(function(tl,j){
         var off=(j-(k-1)/2)*gap, lx=mid.x+ux*off, ly=mid.y+uy*off;
         g.appendChild(mk('rect',{x:lx-sz/2,y:ly-sz/2,width:sz,height:sz,rx:7,fill:'#fff',stroke:'var(--border)','stroke-width':1}));
@@ -680,10 +680,10 @@ a{color:inherit;text-decoration:none;}
     g.appendChild(mk('rect',{x:ix,y:iy,width:iw,height:ih,rx:12,fill:'none',stroke:'var(--amber)','stroke-width':2.4,style:'filter:drop-shadow(0 0 36px hsl(36 92% 50% / .55))'}));
     // component bubbles (pills) on top
     pos.forEach(function(p,i){
-      var lbl=inputs[i].label, w=Math.round(lbl.length*7.2+26), h=32;
+      var lbl=inputs[i].label, w=Math.round(lbl.length*9.2+34), h=46;
       var ng=mk('g',{});
-      ng.appendChild(mk('rect',{x:p.x-w/2,y:p.y-h/2,width:w,height:h,rx:16,fill:'var(--surface-2)',stroke:'var(--amber)','stroke-opacity':.6,'stroke-width':1.5,style:'filter:drop-shadow(0 0 14px hsl(36 92% 50% / .28))'}));
-      var t=mk('text',{x:p.x,y:p.y+4.5,'text-anchor':'middle','font-size':13,'font-weight':500,fill:'var(--text)'}); t.textContent=lbl; ng.appendChild(t);
+      ng.appendChild(mk('rect',{x:p.x-w/2,y:p.y-h/2,width:w,height:h,rx:23,fill:'var(--surface-2)',stroke:'var(--amber)','stroke-opacity':.6,'stroke-width':1.6,style:'filter:drop-shadow(0 0 18px hsl(36 92% 50% / .3))'}));
+      var t=mk('text',{x:p.x,y:p.y+6,'text-anchor':'middle','font-size':16.5,'font-weight':500,fill:'var(--text)'}); t.textContent=lbl; ng.appendChild(t);
       g.appendChild(ng);
     });
   }
