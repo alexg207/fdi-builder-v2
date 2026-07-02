@@ -382,7 +382,7 @@ a{color:inherit;text-decoration:none;}
     var cards=D.axes.map(function(a){return '<div class="axis-card'+(a.key==='warranty'?' wow':'')+'"><div class="kind">'+a.kind+'</div><div class="nm">'+a.name+'</div><div class="wt">'+a.weight+'<span>%</span></div><div class="wt-track"><div class="wt-fill" data-w="'+a.weight+'"></div></div><div class="ms">'+a.measures+'</div></div>';}).join('');
     return act(2,'Invent the signals','Then we build the <span class="accent">custom signals</span> that predict a ready buyer.',
       'Four axes, weighted for this founder. Warranty Burden is the sharpest read: a group’s brand mix is public, so the pain is measurable before the first call.',
-      '<div class="axes-row">'+cards+'</div><div class="axes-note">Service-hiring signal is matched with a per-vertical regex: <code>'+D.hiringRegex+'</code></div>');
+      '<div class="axes-row">'+cards+'</div>');
   }
   function scanHTML(){
     var dots='';for(var i=0;i<140;i++){dots+='<div class="dot"></div>';}
@@ -390,13 +390,13 @@ a{color:inherit;text-decoration:none;}
     return act(3,'Scan the universe','Then we scan <span class="accent">the entire market</span>, US and Canada.',D.scan.query,
       '<div class="scan-wrap"><div class="scan-counter"><div class="n mono" id="scanN">0</div><div class="l" id="scanL">'+D.scan.universeLabel+'</div></div>'+
       '<div class="dot-grid" id="dotGrid">'+dots+'</div>'+
-      '<div class="funnel" id="funnel">'+fstat(D.scan.universe,'rooftops',false)+farrow()+fstat(D.scan.groups,'multi-rooftop groups',false)+farrow()+fstat(D.scan.matched,'strongest matches enriched',true)+'</div>'+
+      '<div class="funnel" id="funnel">'+fstat(D.scan.universe,'rooftops',false)+farrow()+fstat(D.scan.groups,'multi-rooftop groups',false)+farrow()+fstat(D.scan.matched,'high-fit matches',true)+'</div>'+
       '<div class="scan-note">Plenty more clear the bar. We pull the strongest matches to enrich and score in depth, then curate the shortlist from there.</div>'+
       '<div class="excludes" id="excludes">'+ex+'</div></div>');
   }
   function evidenceHTML(){
     var cols=D.enrichments.map(function(e){return '<div class="ev-col"><span class="st">'+TICK+'</span><span class="f">'+e.field+'</span><span class="s">'+e.src+'</span></div>';}).join('');
-    return act(4,'Pull the evidence','On every survivor, we <span class="accent">pull and cite the evidence.</span>',
+    return act(4,'Pull the evidence','On every qualified account, we <span class="accent">pull and cite the evidence.</span>',
       'Rooftops, brand mix, DMS, current inspection tooling, open service reqs from the job boards, and the named buyer. Six tiered sources per account. No claim ships uncited.',
       '<div class="ev-grid"><div><div class="col-label">Enriched per account</div><div class="ev-cols">'+cols+'</div></div>'+
       '<div><div class="col-label">Sourcing every claim, live</div><div class="ev-feed"><div class="fh"><span class="dotpulse"></span> Evidence feed</div><div id="feedList">'+evidenceFeed()+'</div></div></div></div>');
@@ -421,14 +421,10 @@ a{color:inherit;text-decoration:none;}
   }
   function networkHTML(){
     return act(7,'The way in','And Primary <span class="accent">already knows the way in.</span>',
-      'This is the layer no one else has. Primary’s network, partners, advisors, portfolio founders, and operators, carries warm paths into the shortlist. Every line is a relationship that opens a door. Drag to pan, scroll to zoom, hover any node.',
+      'Primary’s network, its partners, advisors, portfolio founders, and operators, already carries warm paths into the shortlist. Each line is a relationship that can open the door. Drag to pan, scroll to zoom, hover any node.',
       '<div class="net-wrap"><svg class="net-svg" id="netSvg" viewBox="0 0 1160 600"><g id="netZoom"></g></svg>'+
       '<div class="net-legend">'+
-        '<div class="lg lgh">Primary connectors</div>'+
-        '<div class="lg"><span class="sw" style="background:hsl(214 82% 64%)"></span> Primary Partner</div>'+
-        '<div class="lg"><span class="sw" style="background:hsl(190 70% 54%)"></span> Auto-retail Advisor</div>'+
-        '<div class="lg"><span class="sw" style="background:hsl(266 74% 70%)"></span> Portfolio Founder</div>'+
-        '<div class="lg"><span class="sw" style="background:hsl(168 60% 52%)"></span> Operator Network</div>'+
+        '<div class="lg"><span class="ring" style="border-color:var(--text-mid)"></span> Primary connector</div>'+
         '<div class="lg lgh" style="margin-top:5px">Accounts</div>'+
         '<div class="lg"><span class="sw" style="background:var(--q-high)"></span> High priority</div>'+
         '<div class="lg"><span class="sw" style="background:var(--q-med)"></span> Mid priority</div>'+
@@ -456,7 +452,7 @@ a{color:inherit;text-decoration:none;}
     setTimeout(function(){
       var picks={3:1,11:1,19:1,27:1,38:1,44:1,52:1,61:1,70:1,79:1,88:1,96:1,105:1,118:1,129:1};
       dots.forEach(function(n,i){n.classList.remove('lit');if(picks[i])n.classList.add('match');else n.classList.add('dim');});
-      tween(D.scan.universe,D.scan.matched,1100*scl(),function(v){nEl.textContent=fmt(Math.round(v));},function(){nEl.textContent=D.scan.matched;lEl.textContent='strongest matches pulled to enrich in depth';});
+      tween(D.scan.universe,D.scan.matched,1100*scl(),function(v){nEl.textContent=fmt(Math.round(v));},function(){nEl.textContent=D.scan.matched;lEl.textContent='high-fit matches we research in depth';});
     },REDUCED?200:3200);
     setTimeout(function(){qsa(el,'.fstat').forEach(function(n,i){n.classList.add('pop');setTimeout(function(){n.classList.add('on');},i*240);});},REDUCED?100:900);
     setTimeout(function(){qsa(el,'.ex').forEach(function(n,i){setTimeout(function(){n.classList.add('struck');},i*120);});},REDUCED?200:4600);
@@ -510,6 +506,8 @@ a{color:inherit;text-decoration:none;}
     var cx=580, cy=300, Rx=400, Ry=235, R1x=205, R1y=128;
     var byName={}; D.companies.forEach(function(c){byName[c.name]=c;});
     var cons=D.network.connectors, also=D.network.alsoReaches||{};
+    // clean, full-enough account labels (avoids a bare "Group 1")
+    var SHORT={"Penske Automotive Group":"Penske","Group 1 Automotive":"Group 1 Automotive","indiGO Auto Group":"indiGO","Fields Auto Group":"Fields","Krause Auto Group":"Krause","Ed Napleton Automotive Group":"Ed Napleton","Castle Automotive Group":"Castle","West Herr Auto Group":"West Herr","Go Auto":"Go Auto","AutoCanada":"AutoCanada"};
     // cool palette — connectors read as a distinct layer from the warm (green/amber) accounts
     var palette={pp:'hsl(214 82% 64%)',aa:'hsl(190 70% 54%)',pf:'hsl(266 74% 70%)',on:'hsl(168 60% 52%)'};
     // each connector owns a fixed angular sector; its accounts fan inside it -> no crossing
@@ -543,7 +541,7 @@ a{color:inherit;text-decoration:none;}
       g.appendChild(mk('circle',{cx:p.x,cy:p.y,r:rad,fill:tierFill(co.tier),stroke:col,'stroke-width':2}));
       var sn=mk('text',{x:p.x,y:p.y+4,'text-anchor':'middle','font-size':11,'font-weight':600,fill:'var(--text)',style:'font-family:var(--font-mono)'});sn.textContent=co.score;g.appendChild(sn);
       var below=Math.sin(p.a)>=-0.15, ly=below?p.y+rad+15:p.y-rad-9;
-      var lbl=mk('text',{x:p.x,y:ly,'text-anchor':'middle','font-size':11,'font-weight':500,fill:'var(--text-mid)'});lbl.textContent=shortName(a);g.appendChild(lbl);
+      var lbl=mk('text',{x:p.x,y:ly,'text-anchor':'middle','font-size':11,'font-weight':500,fill:'var(--text-mid)'});lbl.textContent=SHORT[a]||shortName(a);g.appendChild(lbl);
       g.addEventListener('mousemove',function(e){
         var via=paths.map(function(c){return c.role;}).join(', ')||'no mapped path yet';
         var html='<div class="tn">'+a+'</div><div class="tmeta">'+co.seg+' · score '+co.score+' / 100</div>'+
@@ -560,6 +558,8 @@ a{color:inherit;text-decoration:none;}
       var g=mk('g',{class:'net-node'});
       g.appendChild(mk('circle',{cx:h.x,cy:h.y,r:24,fill:'var(--surface-2)',stroke:h.color,'stroke-width':2.6}));
       var t=mk('text',{x:h.x,y:h.y+4,'text-anchor':'middle','font-size':12,'font-weight':700,fill:h.color});t.textContent=initials(c.role);g.appendChild(t);
+      var base=sectorAng[c.key]||0, rAbove=Math.sin(base)<-0.3, rly=rAbove?h.y-24-11:h.y+24+16;
+      var rl=mk('text',{x:h.x,y:rly,'text-anchor':'middle','font-size':11.5,'font-weight':600,fill:h.color});rl.textContent=c.role;g.appendChild(rl);
       g.addEventListener('mousemove',function(e){tipShow(e,'<div class="tn">'+c.role+'</div><div class="tby">Warm paths into <b>'+c.accounts.length+'</b> shortlist accounts</div>');});
       g.addEventListener('mouseleave',tipHide);
       zoomG.appendChild(g);
