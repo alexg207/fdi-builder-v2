@@ -49,14 +49,14 @@ window.BUILD_DATA = {
   // ---- Act 1: the process / stack — flex how methodical & tool-driven this is -
   // Tools are REAL and per-founder-vertical. Keep accurate; regenerate per build.
   process: {
-    lead: "Every dashboard runs the same pipeline: our own ICP and signal design, a stack of best-in-class research tools, and Claude reasoning over the evidence, with an analyst checking each step.",
+    lead: "Every build is hands-on. We design the ICP and the signals, work a stack of best-in-class tools to gather and verify the evidence, and check every step ourselves.",
     foot: "Proprietary method · best-in-class tools · human-checked at every stage.",
     stages: [
-      { stage: "Discover",          desc: "Map the whole universe of the market with live semantic search and deep research, never a static list buy.", tools: ["Exa Websets", "Parallel"] },
-      { stage: "Design the signals", desc: "The technical core: study the founder's world and derive the four custom drivers that actually predict a ready buyer, then weight them.", tools: ["Exa", "Clay", "research"] },
-      { stage: "Enrich & verify",   desc: "Pull firmographics, primary records, live hiring, and the named buyer for every company, tiering and citing every claim.", tools: ["Clay", "SEC EDGAR", "Sumble", "LinkedIn"] },
-      { stage: "Score",             desc: "Claude reasons over the evidence into one weighted, fully cited 0-to-100 score.", tools: ["Claude", "weighted model"] },
-      { stage: "Map the way in",    desc: "Surface warm paths into each account from Primary's relationship graph.", tools: ["Affinity", "LinkedIn"] }
+      { stage: "Discover",           desc: "We map the market with live semantic search and deep research.", tools: ["Exa Websets", "Parallel"] },
+      { stage: "Design the signals", desc: "The technical core: we study the founder's world and derive the four custom drivers that predict a ready buyer, then weight them.", tools: ["Exa", "Clay", "research"] },
+      { stage: "Enrich & verify",    desc: "We pull firmographics, primary records, live hiring, and the named buyer for every company, tiering and citing every claim.", tools: ["Clay", "SEC EDGAR", "Sumble", "LinkedIn"] },
+      { stage: "Score",              desc: "We weight the four drivers into one 0-to-100 score, every input cited.", tools: ["Claude", "weighted model"] },
+      { stage: "Map the way in",     desc: "We trace warm paths into each account through Primary's relationship graph.", tools: ["Affinity", "LinkedIn"] }
     ]
   },
 
