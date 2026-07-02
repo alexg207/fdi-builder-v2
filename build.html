@@ -572,7 +572,11 @@ a{color:inherit;text-decoration:none;}
     var view={k:1,x:0,y:0};
     function apply(){zoomG.setAttribute('transform','translate('+view.x+' '+view.y+') scale('+view.k+')');}
     function toVB(clientX,clientY){var r=svgEl.getBoundingClientRect(),vb=svgEl.viewBox.baseVal;return {x:(clientX-r.left)/r.width*vb.width,y:(clientY-r.top)/r.height*vb.height};}
-    svgEl.addEventListener('wheel',function(e){e.preventDefault();var pt=toVB(e.clientX,e.clientY);var f=e.deltaY<0?1.15:.87;var nk=Math.max(.55,Math.min(3.2,view.k*f));f=nk/view.k;view.x=pt.x-(pt.x-view.x)*f;view.y=pt.y-(pt.y-view.y)*f;view.k=nk;apply();},{passive:false});
+    svgEl.addEventListener('wheel',function(e){e.preventDefault();var pt=toVB(e.clientX,e.clientY);
+      // factor scales with scroll delta (smooth), then clamp per event so trackpad pinches stay gentle
+      var f=Math.exp(-e.deltaY*0.0012); f=Math.max(0.94,Math.min(1.06,f));
+      var nk=Math.max(0.55,Math.min(3.2,view.k*f)); f=nk/view.k;
+      view.x=pt.x-(pt.x-view.x)*f;view.y=pt.y-(pt.y-view.y)*f;view.k=nk;apply();},{passive:false});
     var drag=null;
     svgEl.addEventListener('mousedown',function(e){drag={x:e.clientX,y:e.clientY};svgEl.classList.add('grabbing');});
     svgEl.addEventListener('mousemove',function(e){if(!drag)return;var a=toVB(e.clientX,e.clientY),b=toVB(drag.x,drag.y);view.x+=a.x-b.x;view.y+=a.y-b.y;drag.x=e.clientX;drag.y=e.clientY;apply();});
