@@ -1,0 +1,90 @@
+{
+  "entity": { "type": "company" },
+  "count": 15,
+  "geo_scope": "United States and Canada",
+  "searchQuery": "Multi-location franchised automotive dealership groups headquartered in the United States or Canada that operate service and fixed-operations departments across multiple rooftops. Their core business is selling and servicing new and used vehicles under franchised OEM brands; they consume inspection, documentation, and video-MPI software internally to run their service departments, they do not produce or sell automotive software. Strongest fit: regional groups with 5 to 50 rooftops with brand mix weighted toward Korean (Hyundai, Genesis) or luxury and German (Porsche, Audi, BMW, Mercedes, Land Rover, Volvo) franchises that carry high warranty and documentation burden, similar to LA Car Guy, McGovern Automotive Group, Earnhardt Auto Centers, and Koons Automotive. Geographic scope: headquartered in the United States or Canada. EXCLUDE automotive software vendors, dealer management system providers, video-MPI and inspection-app companies, smart-glasses companies, and vehicle OEMs, including but not limited to: Plasma, TruVideo, XTime, Cox Automotive, DealerFX, AutoPoint, Solera, MyKaarma, CDK, Reynolds and Reynolds, Tekion, Dealertrack. Also exclude single-rooftop independent dealers and used-car-only lots.",
+  "criteria": [
+    { "description": "Operates as a multi-location automotive dealership group with two or more franchised new-vehicle rooftops", "source_type": "company website / OEM dealer locator" },
+    { "description": "Operates service and fixed-operations (repair / multi-point inspection) departments at its dealerships", "source_type": "dealership service pages" },
+    { "description": "Headquartered in the United States or Canada", "source_type": "corporate filings / company website" },
+    { "description": "Carries franchised new-vehicle OEM brands (not a used-car-only or independent operator)", "source_type": "OEM dealer locator" },
+    { "description": "Brand mix includes Korean (Hyundai/Genesis) or luxury/German franchises, OR documented high warranty/service-documentation activity", "source_type": "trade press / brand pages" }
+  ],
+  "enrichments": [
+    { "title": "Rooftop count", "format": "number", "axis": "Opportunity", "instructions": "Number of dealership locations (rooftops) the group operates." },
+    { "title": "Franchised OEM brands", "format": "text", "axis": "Documentation & Warranty Burden", "instructions": "List the franchised new-vehicle OEM brands the group sells/services (e.g., Toyota, Hyundai, Genesis, BMW, Porsche)." },
+    { "title": "Headquarters", "format": "text", "axis": "Profile", "instructions": "City and state/province of group headquarters." },
+    { "title": "Employee / technician count", "format": "text", "axis": "Opportunity", "instructions": "Approximate total employees and/or number of service technicians if available." },
+    { "title": "DMS provider", "format": "text", "axis": "MPI Tooling Gap", "instructions": "Dealer management system in use if identifiable (CDK, Reynolds & Reynolds, Tekion, Dealertrack)." },
+    { "title": "MPI / video inspection tool", "format": "text", "axis": "MPI Tooling Gap", "instructions": "Current multi-point-inspection / video tool if identifiable (XTime, AutoPoint, DealerFX, MyKaarma, TruVideo, CDK); note any publicly stated media-attach rate." },
+    { "title": "AI / digital adoption posture", "format": "text", "axis": "MPI Tooling Gap", "instructions": "Evidence of AI/automation adoption in service: voice-AI vendors (Mia, Pam), OEM AR-glasses programs, digital-service case studies, innovation press." },
+    { "title": "Service / fixed-ops hiring", "format": "text", "axis": "Hiring", "instructions": "Count and titles of open service technician, service advisor, or fixed-operations roles; cite the careers page or job board URL." },
+    { "title": "Ownership / status", "format": "text", "axis": "Opportunity", "instructions": "Private, family-owned, PE-backed, or publicly traded; name parent or PE firm if applicable." },
+    { "title": "Company LinkedIn URL", "format": "url", "axis": "Contact seed", "instructions": "The group's company LinkedIn profile URL including https:// prefix." },
+    { "title": "Recent service signal", "format": "text", "axis": "Wow evidence", "instructions": "Recent news on OEM video-MPI mandate exposure, warranty documentation, fixed-ops expansion, or group acquisition." },
+    { "title": "Website URL", "format": "url", "axis": "Profile", "instructions": "Primary company website URL." }
+  ],
+  "scoring_model": {
+    "scale": "0-5 per axis; composite = weighted blend, rounded to one decimal; tier from composite (high >=3.8, med 2.6-3.7, low <2.6)",
+    "axes": [
+      {
+        "name": "Documentation & Warranty Burden",
+        "weight": 0.35,
+        "type": "founder-specific (WOW axis)",
+        "primary_input": "Franchised OEM brand mix + cited OEM documentation/video mandate",
+        "rubric": {
+          "5": "Majority (>50%) Korean (Hyundai/Genesis/Kia) or luxury-German (BMW/Mercedes/Porsche/Audi/Land Rover/Volvo) rooftops, OR a cited named OEM photo/video documentation mandate. REQUIRES cited evidence (WOW_EVIDENCE_SHAPE).",
+          "4": "30-50% high-burden (Korean/luxury-German) franchises",
+          "3": "Domestic-heavy mix (Ford/Stellantis/GM) with documented warranty volume (these brands deny first-time claims on technicalities)",
+          "2": "Mostly mainstream import (Toyota/Honda/Subaru/Nissan), limited high-burden exposure",
+          "1": "Economy/mainstream only, low documentation strictness",
+          "0": "Used-only / no franchised new-vehicle warranty work"
+        }
+      },
+      {
+        "name": "Opportunity (Scale)",
+        "weight": 0.25,
+        "type": "standard",
+        "primary_input": "Rooftop count (tech/employee count as tiebreaker)",
+        "rubric": {
+          "5": "25+ rooftops",
+          "4": "12-24 rooftops",
+          "3": "6-11 rooftops",
+          "2": "3-5 rooftops",
+          "1": "2 rooftops",
+          "0": "single rooftop (excluded)"
+        }
+      },
+      {
+        "name": "MPI Tooling Gap (Displacement)",
+        "weight": 0.25,
+        "type": "founder-specific",
+        "primary_input": "Current MPI/video tool maturity + AI-adoption posture (attach rate only if publicly cited)",
+        "rubric": {
+          "5": "Legacy/limited or no MPI-video tooling AND a cited dissatisfaction or low-attach signal: wide-open displacement",
+          "4": "Legacy MPI tool in place (XTime/AutoPoint/DealerFX/MyKaarma), no modern automation layer",
+          "3": "Legacy tool + active AI adoption (voice AI / OEM AR pilots): receptive but partially served",
+          "2": "Modern, well-tooled operation (e.g., Tekion + high attach) open to an integration play",
+          "1": "Best-in-class, fully tooled; glasses purely incremental",
+          "0": "Excluded (competitor/vendor)"
+        }
+      },
+      {
+        "name": "Hiring (Fixed-Ops Growth)",
+        "weight": 0.15,
+        "type": "standard",
+        "primary_input": "Count of open service/fixed-ops roles matched by HIRING_KEYWORD_REGEX (Phase 6j job data)",
+        "rubric": {
+          "5": "10+ open service/fixed-ops roles",
+          "4": "6-9 open roles",
+          "3": "3-5 open roles",
+          "2": "1-2 open roles",
+          "1": "No current openings but recent fixed-ops expansion",
+          "0": "No hiring signal"
+        }
+      }
+    ],
+    "HIRING_KEYWORD_REGEX": "/\\b(service|automotive|master|diesel|line|lube|express)\\s+(technician|tech|advisor|writer|manager|director)\\b|fixed[\\s-]?ops(erations)?|shop foreman|service (bdc|porter)|\\bmechanic\\b|technician apprentice/i",
+    "WOW_EVIDENCE_SHAPE": "Cited evidence that a target carries Korean or luxury/German franchises (implying 50%+ warranty mix), OR a named OEM photo/video documentation mandate, OR a publicly documented media-attach rate well under the 90% industry north-star."
+  }
+}

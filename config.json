@@ -1,0 +1,18 @@
+{
+  "founder_company": "Lantern",
+  "founders": ["Austin Rief (CEO, ex-Morning Brew)", "Grant Wilkinson (ex-Rosedale)"],
+  "slug": "lantern-auto",
+  "one_line": "AI safety glasses that automate auto-mechanic inspection, MPI video, and quoting; the intelligence layer for blue-collar work.",
+  "pvp_point": "Adam Piasecki / Jason Shuman",
+  "geo_scope": "United States and Canada",
+  "icp": "Multi-location franchised auto dealership groups (fixed-ops / service department buyer)",
+  "build_start": "2026-06-24",
+  "raise": "$15M",
+  "sources": {
+    "lantern_canonical": ["inputs/lantern-memo.md"],
+    "industry_context_not_lantern": ["inputs/context/plasma-memo.md", "inputs/context/buyer-calls.md"]
+  },
+  "competitors_excluded": ["TruVideo", "Plasma", "XTime/DealerFX/AutoPoint legacy MPI vendors"],
+  "open_gaps": ["No founder voice (no Austin/Grant quotes exist) — using buyer-voice as proxy; flag before delivery"],
+  "name_collision_note": "Distinct from prior alexg207/lantern-fdi (wholesale-distributor purchasing agents) — unrelated company, same name."
+}
