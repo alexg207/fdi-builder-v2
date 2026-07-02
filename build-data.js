@@ -52,11 +52,11 @@ window.BUILD_DATA = {
     lead: "Every dashboard runs the same pipeline: our own ICP and signal design, a stack of best-in-class research tools, and Claude reasoning over the evidence, with an analyst checking each step.",
     foot: "Proprietary method · best-in-class tools · human-checked at every stage.",
     stages: [
-      { stage: "Discover", tools: ["Exa Websets", "Parallel"],         method: "Semantic search and deep research across the live web, not a static list buy." },
-      { stage: "Enrich",   tools: ["Clay", "SEC EDGAR", "trade press"], method: "Firmographics and primary records, every claim tiered and cited." },
-      { stage: "Signal",   tools: ["Sumble", "job boards", "LinkedIn"], method: "Live hiring and role data, pulled per company." },
-      { stage: "Score",    tools: ["Claude", "weighted model"],        method: "Reasoning over the evidence into one cited 0-to-100 score." },
-      { stage: "Map",      tools: ["Affinity", "LinkedIn"],            method: "Primary's relationship graph surfaces the warm paths in." }
+      { stage: "Discover",          desc: "Map the whole universe of the market with live semantic search and deep research, never a static list buy.", tools: ["Exa Websets", "Parallel"] },
+      { stage: "Design the signals", desc: "The technical core: study the founder's world and derive the four custom drivers that actually predict a ready buyer, then weight them.", tools: ["Exa", "Clay", "research"] },
+      { stage: "Enrich & verify",   desc: "Pull firmographics, primary records, live hiring, and the named buyer for every company, tiering and citing every claim.", tools: ["Clay", "SEC EDGAR", "Sumble", "LinkedIn"] },
+      { stage: "Score",             desc: "Claude reasons over the evidence into one weighted, fully cited 0-to-100 score.", tools: ["Claude", "weighted model"] },
+      { stage: "Map the way in",    desc: "Surface warm paths into each account from Primary's relationship graph.", tools: ["Affinity", "LinkedIn"] }
     ]
   },
 
@@ -218,7 +218,7 @@ window.BUILD_DATA = {
     connectors: [
       { key: "pp", role: "Primary Partner",     accounts: ["Penske Automotive Group", "Group 1 Automotive", "AutoCanada"] },
       { key: "aa", role: "Auto-retail Advisor", accounts: ["indiGO Auto Group", "Fields Auto Group", "Krause Auto Group"] },
-      { key: "pf", role: "Portfolio Founder",   accounts: ["Ed Napleton Automotive Group", "Castle Automotive Group"] },
+      { key: "pf", role: "Founder",             accounts: ["Ed Napleton Automotive Group", "Castle Automotive Group"] },
       { key: "on", role: "Operator Network",    accounts: ["West Herr Auto Group", "Go Auto"] }
     ],
     // Secondary warm paths — shown as a ring + in the tooltip, NOT as a crossing edge.
