@@ -71,7 +71,7 @@ window.BUILD_DATA = {
     matched: 15,              // strongest matches pulled to enrich (MANY more qualify; 15 = the top set we surfaced)
     curated: 10,              // locked shortlist
     partners: 3,              // signed / onboarding design partners
-    query: "Multi-location franchised dealer groups that run their own fixed-ops departments and carry high-warranty brand mix, not the software vendors who sell to them.",
+    query: "Multi-location franchised dealer groups that run their own fixed-ops and carry a high-warranty brand mix.",
     excludes: ["Plasma", "TruVideo", "XTime", "Cox Automotive", "DealerFX", "AutoPoint",
                "MyKaarma", "CDK", "Reynolds & Reynolds", "Tekion", "Dealertrack",
                "single-rooftop dealers", "used-car-only lots"]

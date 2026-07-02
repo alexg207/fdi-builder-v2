@@ -325,7 +325,7 @@ a{color:inherit;text-decoration:none;}
   document.getElementById('brandMark').innerHTML=D.founder.logoSvg;
   document.getElementById('brandName').textContent=D.founder.name;
   document.getElementById('revealMark').innerHTML=D.founder.logoSvg;
-  document.getElementById('revealSub').textContent='From '+fmt(D.scan.universe)+' rooftops down to a ranked shortlist, each account with its score, its evidence, and a warm path in.';
+  document.getElementById('revealSub').textContent='From '+fmt(D.scan.universe)+' rooftops down to a ranked shortlist, each account with its score, its evidence, and a warm path in where we have one.';
   document.getElementById('revealAxes').innerHTML=D.axes.map(function(a){return '<span class="axis-mini">'+a.name+'</span>';}).join('');
 
   var TICK=svg('<polyline points="20,6 9,17 4,12"/>');
@@ -365,13 +365,13 @@ a{color:inherit;text-decoration:none;}
     '<div class="mk">'+D.founder.logoSvg+'</div>'+
     '<div class="eye">Primary · Founder-Driven Intelligence</div>'+
     '<h1>How we built <span class="accent">'+D.founder.name+'’s</span> sales intelligence dashboard</h1>'+
-    '<p>Walk through how we built it, from a blank market to a ranked, evidence-backed shortlist, with a warm path into every account. Go at your own pace.</p>'+
+    '<p>Follow it end to end, from a blank market to a ranked, evidence-backed shortlist, with a warm path in where we have one. Go at your own pace.</p>'+
     '</div>';}
 
   function icpHTML(){
     var reads=D.icp.read.map(function(r){return '<div class="read-item pop"><div class="t">'+r.label+'</div><div class="m">'+r.meta+'</div></div>';}).join('');
     var quals=D.icp.qualifier.map(function(q){return '<div class="qual-item"><span class="tick">'+TICK+'</span>'+q+'</div>';}).join('');
-    return act(1,'Derive the ICP','We don’t guess who buys. We <span class="accent">immerse in the business and research it ourselves.</span>',
+    return act(1,'Derive the ICP','We don’t guess who buys. We <span class="accent">immerse ourselves in the business and define the ICP.</span>',
       'The founder’s memo and calls, the category, and our own market research become one precise, checkable definition of who is in-market.',
       '<div class="icp-grid"><div><div class="col-label">What we work from</div><div class="read-list">'+reads+'</div></div>'+
       '<div class="icp-arrow">'+ARROW+'</div>'+
@@ -380,37 +380,37 @@ a{color:inherit;text-decoration:none;}
   }
   function axesHTML(){
     var cards=D.axes.map(function(a){return '<div class="axis-card'+(a.key==='warranty'?' wow':'')+'"><div class="kind">'+a.kind+'</div><div class="nm">'+a.name+'</div><div class="wt">'+a.weight+'<span>%</span></div><div class="wt-track"><div class="wt-fill" data-w="'+a.weight+'"></div></div><div class="ms">'+a.measures+'</div></div>';}).join('');
-    return act(2,'Invent the signals','Then we build the <span class="accent">custom signals</span> that predict a ready buyer.',
+    return act(2,'Build the signals','We build the <span class="accent">custom signals</span> that predict a ready buyer.',
       'Four signals, weighted for this founder. Warranty Burden reads sharpest: a group’s brand mix is public, so we can measure the pain before the first call.',
       '<div class="axes-row">'+cards+'</div>');
   }
   function scanHTML(){
     var dots='';for(var i=0;i<140;i++){dots+='<div class="dot"></div>';}
     var ex='<div class="ex-lead">Excluded up front: the software vendors who sell to dealers, not the dealers themselves.</div>'+D.scan.excludes.map(function(e){return '<span class="ex">'+e+'</span>';}).join('');
-    return act(3,'Scan the universe','Then we scan <span class="accent">the entire market</span>, US and Canada.',D.scan.query,
+    return act(3,'Scan the market','We scan <span class="accent">the market</span>, US and Canada.',D.scan.query,
       '<div class="scan-wrap"><div class="scan-counter"><div class="n mono" id="scanN">0</div><div class="l" id="scanL">'+D.scan.universeLabel+'</div></div>'+
       '<div class="dot-grid" id="dotGrid">'+dots+'</div>'+
       '<div class="funnel" id="funnel">'+fstat(D.scan.universe,'rooftops',false)+farrow()+fstat(D.scan.groups,'multi-rooftop groups',false)+farrow()+fstat(D.scan.matched,'high-fit matches',true)+'</div>'+
-      '<div class="scan-note">Plenty more clear the bar. We pull the strongest matches to enrich and score in depth, then curate the shortlist from there.</div>'+
+      '<div class="scan-note">Many more clear the bar. We pull the strongest matches to enrich and score in depth, then curate the shortlist from there.</div>'+
       '<div class="excludes" id="excludes">'+ex+'</div></div>');
   }
   function evidenceHTML(){
     var cols=D.enrichments.map(function(e){return '<div class="ev-col"><span class="st">'+TICK+'</span><span class="f">'+e.field+'</span><span class="s">'+e.src+'</span></div>';}).join('');
-    return act(4,'Pull the evidence','On every qualified account, we <span class="accent">pull and cite the evidence.</span>',
-      'For each account we pull the rooftops, brand mix, DMS, current inspection tooling, open service roles from the job boards, and the name of the buyer, each backed by six tiered sources. Nothing ships uncited.',
+    return act(4,'Pull the evidence','We <span class="accent">pull and cite the evidence</span> on every account.',
+      'For each account we pull the rooftops, brand mix, DMS, current inspection tooling, open service roles from the job boards, and the name of the buyer, each backed by multiple tiered sources. Nothing ships uncited.',
       '<div class="ev-grid"><div><div class="col-label">Pulled for each account</div><div class="ev-cols">'+cols+'</div></div>'+
       '<div><div class="col-label">Every claim, sourced</div><div class="ev-feed"><div class="fh"><span class="dotpulse"></span> Evidence feed</div><div id="feedList">'+evidenceFeed()+'</div></div></div></div>');
   }
   function scoreHTML(){
     var hero=D.companies[0];
     var abars=D.axes.map(function(a){return '<div class="abar"><span class="an">'+a.name+'</span><div class="track"><div class="fill" data-v="'+hero.s[a.key]+'"></div></div><span class="av" data-v="'+hero.s[a.key]+'">0.0</span></div>';}).join('');
-    return act(5,'Score 0 to 100','Every account gets a <span class="accent">weighted, cited score.</span>',
+    return act(5,'Score 0 to 100','We <span class="accent">score every account</span>, 0 to 100.',
       'The four signals combine on this founder’s weights into a single 0-to-100 score. The priority tier comes straight from that number, so the label and the score always agree.',
       '<div class="score-wrap"><div class="formula"><b>0.35</b>·Warranty + <b>0.25</b>·Opportunity + <b>0.25</b>·Tooling + <b>0.15</b>·Hiring</div>'+
       '<div class="hero-score"><div><div class="hero-name">'+hero.name+'<span class="seg">'+hero.seg+'</span></div><div class="abars">'+abars+'</div></div>'+
       '<div class="score-arrow">'+ARROW+'</div>'+
       '<div class="composite"><div class="big"><span id="compN">0</span><span class="u">/100</span></div><div class="tier">HIGH</div></div></div>'+
-      '<div class="score-cap">Every number backed by a cited source. No vibes.</div></div>');
+      '<div class="score-cap">Every number backed by a cited source.</div></div>');
   }
   function shortlistHTML(){
     var rows=D.companies.map(function(c,i){return '<div class="row '+qtier(c.tier)+'" data-score="'+c.score+'"><span class="rk">'+(i+1)+'</span><span class="nm">'+c.name+'<span class="sg">'+c.seg+'</span></span><div class="track"><div class="fill"></div></div><span class="sc">0</span></div>';}).join('');
@@ -420,8 +420,8 @@ a{color:inherit;text-decoration:none;}
       '<div class="ranked" id="ranked">'+rows+'</div><div class="partners"><div class="ph">Already signed &amp; onboarding</div><div class="prow" id="prow">'+pcards+'</div></div>');
   }
   function networkHTML(){
-    return act(7,'The way in','And Primary <span class="accent">already knows the way in.</span>',
-      'Primary’s network, its partners, advisors, portfolio founders, and operators, already carries warm paths into the shortlist. Each line is a relationship that can open the door. Drag to pan, scroll to zoom, hover any node.',
+    return act(7,'Map the way in','We map the <span class="accent">warm paths in.</span>',
+      'Primary’s network of partners, advisors, portfolio founders, and operators is where we source warm paths into the shortlist. Each line is a real relationship. Drag to pan, scroll to zoom, hover any node.',
       '<div class="net-wrap"><svg class="net-svg" id="netSvg" viewBox="0 0 1160 600"><g id="netZoom"></g></svg>'+
       '<div class="net-legend">'+
         '<div class="lg"><span class="ring" style="border-color:var(--text-mid)"></span> Primary connector</div>'+
