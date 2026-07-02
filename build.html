@@ -659,12 +659,20 @@ a{color:inherit;text-decoration:none;}
     // small inward flowing dots
     var flow=mk('g',{}); g.appendChild(flow);
     pos.forEach(function(p,i){flowDots(flow,p.x,p.y,cx,cy,(i%2?'var(--q-high)':'var(--amber-light)'),3,3);});
-    // tool logos riding each line (one or more; tools repeat across components)
+    // tool logos evenly spaced along each line, between the bubble and the dashboard
     pos.forEach(function(p,i){
       var tools=inputs[i].tools||[], k=tools.length; if(!k)return;
-      var L=Math.hypot(cx-p.x,cy-p.y), ux=(cx-p.x)/L, uy=(cy-p.y)/L, mid=logoPos(p.x,p.y), sz=28, gap=sz+18;
+      var dx=cx-p.x, dy=cy-p.y, L=Math.hypot(dx,dy), ux=dx/L, uy=dy/L, sz=28;
+      var w=Math.round(inputs[i].label.length*9.2+34), h=46;
+      var exit=Math.min(Math.abs(ux)>1e-6?(w/2)/Math.abs(ux):1e9, Math.abs(uy)>1e-6?(h/2)/Math.abs(uy):1e9);
+      var tStart=(exit+20)/L;
+      var ts=[]; function chk(t){if(t>0&&t<1){var X=p.x+dx*t,Y=p.y+dy*t;if(X>=ix-0.5&&X<=ix+iw+0.5&&Y>=iy-0.5&&Y<=iy+ih+0.5)ts.push(t);}}
+      if(dx!==0){chk((ix-p.x)/dx);chk((ix+iw-p.x)/dx);}
+      if(dy!==0){chk((iy-p.y)/dy);chk((iy+ih-p.y)/dy);}
+      var tEnd=(ts.length?Math.min.apply(null,ts):0.62)-20/L;
+      if(tEnd<=tStart){var mid=(tStart+tEnd)/2;tStart=mid-0.02;tEnd=mid+0.02;}
       tools.forEach(function(tl,j){
-        var off=(j-(k-1)/2)*gap, lx=mid.x+ux*off, ly=mid.y+uy*off;
+        var t=tStart+(tEnd-tStart)*(j+1)/(k+1), lx=p.x+dx*t, ly=p.y+dy*t;
         g.appendChild(mk('rect',{x:lx-sz/2,y:ly-sz/2,width:sz,height:sz,rx:7,fill:'#fff',stroke:'var(--border)','stroke-width':1}));
         var im=mk('image',{x:lx-sz/2+4,y:ly-sz/2+4,width:sz-8,height:sz-8,preserveAspectRatio:'xMidYMid meet'});
         im.setAttribute('href','./assets/logos/'+tl+'.png'); im.setAttributeNS(XL,'href','./assets/logos/'+tl+'.png');
