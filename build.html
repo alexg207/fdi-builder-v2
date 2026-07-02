@@ -224,7 +224,7 @@ a{color:inherit;text-decoration:none;}
 
 /* act 9 convergence */
 .conv-wrap{position:relative;max-width:1000px;margin:0 auto;}
-.conv-svg{width:100%;height:min(58vh,500px);display:block;}
+.conv-svg{width:100%;height:min(62vh,540px);display:block;}
 .conv-svg text{user-select:none;}
 
 /* cold + reveal */
@@ -634,13 +634,13 @@ a{color:inherit;text-decoration:none;}
   function convergeHTML(){
     return act(9,'The dashboard','Everything you just saw, <span class="accent">in one place.</span>',
       D.converge.lead,
-      '<div class="conv-wrap"><svg class="conv-svg" id="convSvg" viewBox="0 0 1160 520"><g id="convG"></g></svg></div>');
+      '<div class="conv-wrap"><svg class="conv-svg" id="convSvg" viewBox="0 0 1200 640"><g id="convG"></g></svg></div>');
   }
   function renderConverge(el){
     var g=el.querySelector('#convG'); g.innerHTML='';
     var XL='http://www.w3.org/1999/xlink';
-    var cx=580, cy=250, Rx=430, Ry=185;
-    var iw=430, ih=250, ix=cx-iw/2, iy=cy-ih/2;
+    var cx=600, cy=300, Rx=500, Ry=248;
+    var iw=336, ih=198, ix=cx-iw/2, iy=cy-ih/2;
     var inputs=D.converge.inputs, n=inputs.length, pos=[];
     for(var i=0;i<n;i++){var a=-Math.PI/2+i*(2*Math.PI/n);pos.push({x:cx+Rx*Math.cos(a),y:cy+Ry*Math.sin(a),a:a});}
     // midpoint of the exposed (outside-the-dashboard) part of each path — where the logo rides
@@ -652,34 +652,37 @@ a{color:inherit;text-decoration:none;}
       var tin=ts.length?Math.min.apply(null,ts):0.5, t=tin*0.5;
       return {x:px+dx*t,y:py+dy*t};
     }
+    // faint guide ring
+    g.appendChild(mk('ellipse',{cx:cx,cy:cy,rx:Rx,ry:Ry,fill:'none',stroke:'var(--border)','stroke-opacity':.25}));
     // lines: each input -> center
-    pos.forEach(function(p){g.appendChild(mk('line',{x1:p.x,y1:p.y,x2:cx,y2:cy,stroke:'var(--amber)','stroke-width':1.2,'stroke-opacity':.2,'stroke-linecap':'round'}));});
-    // big inward flowing dots (data converging into the dashboard)
+    pos.forEach(function(p){g.appendChild(mk('line',{x1:p.x,y1:p.y,x2:cx,y2:cy,stroke:'var(--amber)','stroke-width':1.2,'stroke-opacity':.22,'stroke-linecap':'round'}));});
+    // small inward flowing dots (data converging into the dashboard)
     var flow=mk('g',{}); g.appendChild(flow);
-    pos.forEach(function(p,i){flowDots(flow,p.x,p.y,cx,cy,(i%2?'var(--q-high)':'var(--amber-light)'),3,6);});
-    // center dashboard preview
-    var defs=mk('defs',{}), cp=mk('clipPath',{id:'convclip'}); cp.appendChild(mk('rect',{x:ix,y:iy,width:iw,height:ih,rx:13})); defs.appendChild(cp); g.appendChild(defs);
+    pos.forEach(function(p,i){flowDots(flow,p.x,p.y,cx,cy,(i%2?'var(--q-high)':'var(--amber-light)'),3,3);});
+    // center dashboard preview (smaller, so the diagram breathes)
+    var defs=mk('defs',{}), cp=mk('clipPath',{id:'convclip'}); cp.appendChild(mk('rect',{x:ix,y:iy,width:iw,height:ih,rx:12})); defs.appendChild(cp); g.appendChild(defs);
     var img=mk('image',{x:ix,y:iy,width:iw,height:ih,'clip-path':'url(#convclip)',preserveAspectRatio:'xMidYMin slice'});
     img.setAttribute('href','./assets/dashboard-preview.png');
     img.setAttributeNS(XL,'href','./assets/dashboard-preview.png');
     g.appendChild(img);
-    g.appendChild(mk('rect',{x:ix,y:iy,width:iw,height:ih,rx:13,fill:'none',stroke:'var(--amber)','stroke-width':2.4,style:'filter:drop-shadow(0 0 32px hsl(36 92% 50% / .45))'}));
-    var cl=mk('text',{x:cx,y:iy+ih+24,'text-anchor':'middle','font-size':12.5,'font-weight':600,fill:'var(--amber-light)'}); cl.textContent=D.converge.label; g.appendChild(cl);
+    g.appendChild(mk('rect',{x:ix,y:iy,width:iw,height:ih,rx:12,fill:'none',stroke:'var(--amber)','stroke-width':2.2,style:'filter:drop-shadow(0 0 34px hsl(36 92% 50% / .5))'}));
+    var cl=mk('text',{x:cx,y:iy+ih+26,'text-anchor':'middle','font-size':12.5,'font-weight':600,fill:'var(--amber-light)'}); cl.textContent=D.converge.label; g.appendChild(cl);
     // tool logo riding each data path (logo only, no label)
     pos.forEach(function(p,i){
       var lg=inputs[i].logo; if(!lg)return;
-      var lp=logoPos(p.x,p.y), sz=30;
-      g.appendChild(mk('rect',{x:lp.x-sz/2,y:lp.y-sz/2,width:sz,height:sz,rx:7,fill:'#fff',stroke:'var(--border)','stroke-width':1}));
+      var lp=logoPos(p.x,p.y), sz=32;
+      g.appendChild(mk('rect',{x:lp.x-sz/2,y:lp.y-sz/2,width:sz,height:sz,rx:8,fill:'#fff',stroke:'var(--border)','stroke-width':1}));
       var im=mk('image',{x:lp.x-sz/2+4,y:lp.y-sz/2+4,width:sz-8,height:sz-8,preserveAspectRatio:'xMidYMid meet'});
       im.setAttribute('href','./assets/logos/'+lg+'.png'); im.setAttributeNS(XL,'href','./assets/logos/'+lg+'.png');
       g.appendChild(im);
     });
-    // input nodes on top
+    // source nodes — bigger, glowing dots
     pos.forEach(function(p,i){
       var ng=mk('g',{});
-      ng.appendChild(mk('circle',{cx:p.x,cy:p.y,r:6,fill:'var(--surface-2)',stroke:'var(--amber)','stroke-width':1.8}));
-      var below=Math.sin(p.a)>=-0.1, ly=below?p.y+19:p.y-12;
-      var t=mk('text',{x:p.x,y:ly,'text-anchor':'middle','font-size':12,'font-weight':500,fill:'var(--text-mid)'}); t.textContent=inputs[i].label; ng.appendChild(t);
+      ng.appendChild(mk('circle',{cx:p.x,cy:p.y,r:14,fill:'none',stroke:'var(--amber)','stroke-opacity':.3,'stroke-width':1.5}));
+      ng.appendChild(mk('circle',{cx:p.x,cy:p.y,r:8.5,fill:'var(--amber-light)',style:'filter:drop-shadow(0 0 8px hsl(36 92% 50% / .6))'}));
+      var below=Math.sin(p.a)>=-0.1, ly=below?p.y+26:p.y-16;
+      var t=mk('text',{x:p.x,y:ly,'text-anchor':'middle','font-size':12.5,'font-weight':500,fill:'var(--text-mid)'}); t.textContent=inputs[i].label; ng.appendChild(t);
       g.appendChild(ng);
     });
   }

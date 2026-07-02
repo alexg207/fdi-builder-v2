@@ -252,7 +252,7 @@ window.BUILD_DATA = {
 
   // ---- Act 9: convergence — everything flows into the finished dashboard ------
   converge: {
-    lead: "The ICP, the four signals, the sourced evidence, the scores, the buyers, and the warm paths, all assembled into one live dashboard.",
+    lead: "It all lands in one place: who to call, why they are ready, and how to get in.",
     label: "Lantern Intelligence Dashboard",
     inputs: [
       { label: "ICP", logo: "exa" },
