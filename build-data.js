@@ -22,9 +22,10 @@ window.BUILD_DATA = {
   // ---- Act 1: derive the ICP -------------------------------------------------
   icp: {
     read: [
-      { label: "Investment memo", meta: "Lantern raise + thesis" },
-      { label: "Buyer interviews", meta: "fixed-ops directors, dealer principals" },
-      { label: "Category diligence", meta: "video-MPI + warranty landscape" }
+      { label: "Founder memo & deck", meta: "the thesis, in their words" },
+      { label: "Buyer & customer calls", meta: "fixed-ops directors, dealer principals" },
+      { label: "Category diligence", meta: "video-MPI + warranty landscape" },
+      { label: "Our own research", meta: "market mapping + comparable groups" }
     ],
     qualifier: [
       "Multi-rooftop franchised dealership group",
@@ -47,17 +48,17 @@ window.BUILD_DATA = {
 
   // ---- Act 2: invent the signals (the 4 custom axes) -------------------------
   axes: [
-    { key: "warranty", name: "Warranty Burden", weight: 35, kind: "Custom · WOW signal",
-      measures: "How much of the group's brand mix is Korean or luxury-German, where every part is photo-documented.",
+    { key: "warranty", name: "Warranty Burden", weight: 35, kind: "Founder-specific",
+      measures: "The share of a group's brand mix that's Korean or luxury-German, where every part has to be photo-documented.",
       five: "Majority Korean/luxury-German rooftops, or a cited OEM photo/video mandate." },
     { key: "scale", name: "Opportunity", weight: 25, kind: "Standard",
-      measures: "Rooftop count, the size of the service footprint Lantern could deploy across.",
+      measures: "How many rooftops the group runs, the size of the service footprint Lantern can deploy across.",
       five: "25+ rooftops." },
-    { key: "tooling", name: "Tooling Gap", weight: 25, kind: "Custom · displacement",
-      measures: "How legacy or absent the current MPI / video-inspection tooling is, how open the seat is.",
+    { key: "tooling", name: "Tooling Gap", weight: 25, kind: "Founder-specific",
+      measures: "How dated or absent their current inspection tooling is, and how open the seat is for Lantern.",
       five: "Legacy or no MPI-video tooling plus a cited dissatisfaction signal." },
     { key: "hiring", name: "Service Hiring", weight: 15, kind: "Standard",
-      measures: "Open service-technician and fixed-ops reqs, a live read on service-labor pressure.",
+      measures: "Open service-technician and fixed-ops roles, a live read on where demand is outrunning staff.",
       five: "10+ open service / fixed-ops roles." }
   ],
   hiringRegex: "/(service|master|diesel|lube)\\s+(technician|advisor|manager)|fixed[\\s-]?ops|shop foreman|mechanic/i",

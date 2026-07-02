@@ -365,15 +365,15 @@ a{color:inherit;text-decoration:none;}
     '<div class="mk">'+D.founder.logoSvg+'</div>'+
     '<div class="eye">Primary · Founder-Driven Intelligence</div>'+
     '<h1>How we built <span class="accent">'+D.founder.name+'’s</span> target map</h1>'+
-    '<p>Walk through every step the engine ran, from a blank market to a ranked, evidence-backed shortlist and the warm path into each account. Move at your own pace.</p>'+
+    '<p>Walk through how we built it, from a blank market to a ranked, evidence-backed shortlist, with a warm path into every account. Go at your own pace.</p>'+
     '</div>';}
 
   function icpHTML(){
     var reads=D.icp.read.map(function(r){return '<div class="read-item pop"><div class="t">'+r.label+'</div><div class="m">'+r.meta+'</div></div>';}).join('');
     var quals=D.icp.qualifier.map(function(q){return '<div class="qual-item"><span class="tick">'+TICK+'</span>'+q+'</div>';}).join('');
-    return act(1,'Derive the ICP','We don’t guess who buys. We <span class="accent">read it out of the founder’s world.</span>',
-      'Memo, buyer calls, and category diligence collapse into a precise, checkable definition of an in-market account.',
-      '<div class="icp-grid"><div><div class="col-label">What we read</div><div class="read-list">'+reads+'</div></div>'+
+    return act(1,'Derive the ICP','We don’t guess who buys. We <span class="accent">immerse in the business and research it ourselves.</span>',
+      'The founder’s memo and calls, the category, and our own market research become one precise, checkable definition of who is in-market.',
+      '<div class="icp-grid"><div><div class="col-label">What we work from</div><div class="read-list">'+reads+'</div></div>'+
       '<div class="icp-arrow">'+ARROW+'</div>'+
       '<div><div class="col-label">The ICP qualifier</div><div class="qual-list">'+quals+'</div></div></div>'+
       '<div class="icp-foot"><span class="pill">Buyer: <b>'+D.icp.buyer+'</b></span><span class="pill">Geo: <b>'+D.icp.geo+'</b></span></div>');
@@ -381,12 +381,12 @@ a{color:inherit;text-decoration:none;}
   function axesHTML(){
     var cards=D.axes.map(function(a){return '<div class="axis-card'+(a.key==='warranty'?' wow':'')+'"><div class="kind">'+a.kind+'</div><div class="nm">'+a.name+'</div><div class="wt">'+a.weight+'<span>%</span></div><div class="wt-track"><div class="wt-fill" data-w="'+a.weight+'"></div></div><div class="ms">'+a.measures+'</div></div>';}).join('');
     return act(2,'Invent the signals','Then we build the <span class="accent">custom signals</span> that predict a ready buyer.',
-      'Four axes, weighted for this founder. Warranty Burden is the sharpest read: a group’s brand mix is public, so the pain is measurable before the first call.',
+      'Four signals, weighted for this founder. Warranty Burden reads sharpest: a group’s brand mix is public, so we can measure the pain before the first call.',
       '<div class="axes-row">'+cards+'</div>');
   }
   function scanHTML(){
     var dots='';for(var i=0;i<140;i++){dots+='<div class="dot"></div>';}
-    var ex='<div class="ex-lead">Structurally excluded, the software vendors who sell to dealers, not the dealers:</div>'+D.scan.excludes.map(function(e){return '<span class="ex">'+e+'</span>';}).join('');
+    var ex='<div class="ex-lead">Excluded up front: the software vendors who sell to dealers, not the dealers themselves.</div>'+D.scan.excludes.map(function(e){return '<span class="ex">'+e+'</span>';}).join('');
     return act(3,'Scan the universe','Then we scan <span class="accent">the entire market</span>, US and Canada.',D.scan.query,
       '<div class="scan-wrap"><div class="scan-counter"><div class="n mono" id="scanN">0</div><div class="l" id="scanL">'+D.scan.universeLabel+'</div></div>'+
       '<div class="dot-grid" id="dotGrid">'+dots+'</div>'+
@@ -397,15 +397,15 @@ a{color:inherit;text-decoration:none;}
   function evidenceHTML(){
     var cols=D.enrichments.map(function(e){return '<div class="ev-col"><span class="st">'+TICK+'</span><span class="f">'+e.field+'</span><span class="s">'+e.src+'</span></div>';}).join('');
     return act(4,'Pull the evidence','On every qualified account, we <span class="accent">pull and cite the evidence.</span>',
-      'Rooftops, brand mix, DMS, current inspection tooling, open service reqs from the job boards, and the named buyer. Six tiered sources per account. No claim ships uncited.',
-      '<div class="ev-grid"><div><div class="col-label">Enriched per account</div><div class="ev-cols">'+cols+'</div></div>'+
-      '<div><div class="col-label">Sourcing every claim, live</div><div class="ev-feed"><div class="fh"><span class="dotpulse"></span> Evidence feed</div><div id="feedList">'+evidenceFeed()+'</div></div></div></div>');
+      'For each account we pull the rooftops, brand mix, DMS, current inspection tooling, open service roles from the job boards, and the name of the buyer, each backed by six tiered sources. Nothing ships uncited.',
+      '<div class="ev-grid"><div><div class="col-label">Pulled for each account</div><div class="ev-cols">'+cols+'</div></div>'+
+      '<div><div class="col-label">Every claim, sourced</div><div class="ev-feed"><div class="fh"><span class="dotpulse"></span> Evidence feed</div><div id="feedList">'+evidenceFeed()+'</div></div></div></div>');
   }
   function scoreHTML(){
     var hero=D.companies[0];
     var abars=D.axes.map(function(a){return '<div class="abar"><span class="an">'+a.name+'</span><div class="track"><div class="fill" data-v="'+hero.s[a.key]+'"></div></div><span class="av" data-v="'+hero.s[a.key]+'">0.0</span></div>';}).join('');
     return act(5,'Score 0 to 100','Every account gets a <span class="accent">weighted, cited score.</span>',
-      'Four axis scores blend on this founder’s weights into one number, and the tier is derived straight from it, so the chip and the number can never disagree.',
+      'The four signals combine on this founder’s weights into a single 0-to-100 score. The priority tier comes straight from that number, so the label and the score always agree.',
       '<div class="score-wrap"><div class="formula"><b>0.35</b>·Warranty + <b>0.25</b>·Opportunity + <b>0.25</b>·Tooling + <b>0.15</b>·Hiring</div>'+
       '<div class="hero-score"><div><div class="hero-name">'+hero.name+'<span class="seg">'+hero.seg+'</span></div><div class="abars">'+abars+'</div></div>'+
       '<div class="score-arrow">'+ARROW+'</div>'+
@@ -416,7 +416,7 @@ a{color:inherit;text-decoration:none;}
     var rows=D.companies.map(function(c,i){return '<div class="row '+qtier(c.tier)+'" data-score="'+c.score+'"><span class="rk">'+(i+1)+'</span><span class="nm">'+c.name+'<span class="sg">'+c.seg+'</span></span><div class="track"><div class="fill"></div></div><span class="sc">0</span></div>';}).join('');
     var pcards=D.partners.map(function(p){return '<div class="pcard"><div class="pn">'+p.name+'</div><div class="ps">'+p.status+'</div><div class="pnote">'+p.note+'</div></div>';}).join('');
     return act(6,'Curate the shortlist','The accounts <span class="accent">worth walking into.</span>',
-      'Ranked by score, tiered by relative priority, plus the design partners already signed. This is what lands in the dashboard.',
+      'Ranked by score, grouped by priority, plus the design partners already signed. This is exactly what lands in the dashboard.',
       '<div class="ranked" id="ranked">'+rows+'</div><div class="partners"><div class="ph">Already signed &amp; onboarding</div><div class="prow" id="prow">'+pcards+'</div></div>');
   }
   function networkHTML(){
