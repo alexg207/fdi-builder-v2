@@ -46,6 +46,20 @@ window.BUILD_DATA = {
     { num: "30-70%", label: "Warranty's share of service revenue, the slice that lives on documentation." }
   ],
 
+  // ---- Act 1: the process / stack — flex how methodical & tool-driven this is -
+  // Tools are REAL and per-founder-vertical. Keep accurate; regenerate per build.
+  process: {
+    lead: "Every dashboard runs the same pipeline: our own ICP and signal design, a stack of best-in-class research tools, and Claude reasoning over the evidence, with an analyst checking each step.",
+    foot: "Proprietary method · best-in-class tools · human-checked at every stage.",
+    stages: [
+      { stage: "Discover", tools: ["Exa Websets", "Parallel"],         method: "Semantic search and deep research across the live web, not a static list buy." },
+      { stage: "Enrich",   tools: ["Clay", "SEC EDGAR", "trade press"], method: "Firmographics and primary records, every claim tiered and cited." },
+      { stage: "Signal",   tools: ["Sumble", "job boards", "LinkedIn"], method: "Live hiring and role data, pulled per company." },
+      { stage: "Score",    tools: ["Claude", "weighted model"],        method: "Reasoning over the evidence into one cited 0-to-100 score." },
+      { stage: "Map",      tools: ["Affinity", "LinkedIn"],            method: "Primary's relationship graph surfaces the warm paths in." }
+    ]
+  },
+
   // ---- Act 2: invent the signals (the 4 custom axes) -------------------------
   axes: [
     { key: "warranty", name: "Warranty Burden", weight: 35, kind: "Founder-specific",

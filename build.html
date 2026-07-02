@@ -95,6 +95,18 @@ a{color:inherit;text-decoration:none;}
 .axes-note{text-align:center;font-size:13px;color:var(--text-muted);margin-top:24px;max-width:640px;margin-left:auto;margin-right:auto;}
 .axes-note code{font-family:var(--font-mono);font-size:11.5px;color:var(--amber-light);background:var(--amber-tint);padding:2px 7px;border-radius:5px;}
 
+/* act 1 process / pipeline */
+.pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;max-width:1000px;margin:0 auto;position:relative;}
+.pipe::before{content:"";position:absolute;top:32px;left:9%;right:9%;height:1px;background:linear-gradient(90deg,transparent,hsl(36 92% 50% / .42),transparent);}
+.pstage{position:relative;background:linear-gradient(165deg,var(--surface-2),var(--surface));border:1px solid var(--border);border-radius:13px;padding:16px 13px;text-align:center;}
+.ps-n{width:30px;height:30px;margin:0 auto 12px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--amber);box-shadow:0 0 0 4px var(--bg),0 0 18px hsl(36 92% 50% / .18);}
+.ps-name{font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:9px;}
+.ps-tools{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:10px;}
+.ptool{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;color:var(--text-mid);background:var(--surface);border:1px solid var(--border-soft);border-radius:7px;padding:3px 8px;letter-spacing:.01em;}
+.ptool img{width:15px;height:15px;border-radius:3px;background:#fff;padding:1.5px;object-fit:contain;flex-shrink:0;}
+.ps-method{font-size:11.5px;line-height:1.45;color:var(--text-muted);}
+.pipe-foot{text-align:center;font-size:12.5px;color:var(--text-faint);margin-top:24px;letter-spacing:.02em;}
+
 /* act 3 scan */
 .scan-wrap{max-width:900px;margin:0 auto;}
 .scan-counter{text-align:center;margin-bottom:20px;}
@@ -259,6 +271,7 @@ a{color:inherit;text-decoration:none;}
   .icp-grid,.hero-score{grid-template-columns:1fr;gap:18px;}
   .icp-arrow,.score-arrow{transform:rotate(90deg);}
   .axes-row{grid-template-columns:repeat(2,1fr);}
+  .pipe{grid-template-columns:repeat(2,1fr);} .pipe::before{display:none;}
   .ev-grid{grid-template-columns:1fr;} .ev-feed{height:230px;}
   .dot-grid{grid-template-columns:repeat(20,1fr);}
   .row{grid-template-columns:20px 1fr 44px;} .row .track{display:none;}
@@ -347,16 +360,17 @@ a{color:inherit;text-decoration:none;}
 
   var SCENES=[
     {rail:null, html:coldHTML, enter:function(el){ael(el);}},
-    {rail:0, html:icpHTML, enter:icpEnter},
-    {rail:1, html:axesHTML, enter:axesEnter},
-    {rail:2, html:scanHTML, enter:scanEnter},
-    {rail:3, html:evidenceHTML, enter:evidenceEnter},
-    {rail:4, html:scoreHTML, enter:scoreEnter},
-    {rail:5, html:shortlistHTML, enter:shortlistEnter},
-    {rail:6, html:networkHTML, enter:networkEnter, lastContent:true},
+    {rail:0, html:processHTML, enter:processEnter},
+    {rail:1, html:icpHTML, enter:icpEnter},
+    {rail:2, html:axesHTML, enter:axesEnter},
+    {rail:3, html:scanHTML, enter:scanEnter},
+    {rail:4, html:evidenceHTML, enter:evidenceEnter},
+    {rail:5, html:scoreHTML, enter:scoreEnter},
+    {rail:6, html:shortlistHTML, enter:shortlistEnter},
+    {rail:7, html:networkHTML, enter:networkEnter, lastContent:true},
     {rail:'done', html:function(){return '';}, enter:function(){showReveal();}, reveal:true}
   ];
-  var railDefs=['ICP','Signals','Scan','Evidence','Score','Shortlist','Network'];
+  var railDefs=['Process','ICP','Signals','Scan','Evidence','Score','Shortlist','Network'];
   railEl.innerHTML=railDefs.map(function(l,i){return '<div class="seg" data-i="'+i+'"><div class="lbl"><span class="sn">'+(i+1)+'</span> '+l+'</div><div class="track"><div class="fill"></div></div></div>';}).join('');
   qsa(railEl,'.seg').forEach(function(s){s.addEventListener('click',function(){go(parseInt(s.getAttribute('data-i'),10)+1);});});
 
@@ -368,11 +382,26 @@ a{color:inherit;text-decoration:none;}
     '<p>Follow it end to end, from a blank market to a ranked, evidence-backed shortlist, with a warm path in where we have one. Go at your own pace.</p>'+
     '</div>';}
 
+  function processHTML(){
+    var LOGOS={'Exa Websets':'exa','Parallel':'parallel','Clay':'clay','SEC EDGAR':'sec','Sumble':'sumble','LinkedIn':'linkedin','Claude':'claude','Affinity':'affinity'};
+    var stages=D.process.stages.map(function(s,i){
+      var tools=s.tools.map(function(t){
+        var lg=LOGOS[t]?'<img src="./assets/logos/'+LOGOS[t]+'.png" alt="">':'';
+        return '<span class="ptool">'+lg+t+'</span>';
+      }).join('');
+      return '<div class="pstage pop"><div class="ps-n">'+(i+1)+'</div><div class="ps-name">'+s.stage+'</div><div class="ps-tools">'+tools+'</div><div class="ps-method">'+s.method+'</div></div>';
+    }).join('');
+    return act(1,'The process','This isn’t a list buy. It’s a <span class="accent">research pipeline.</span>',
+      D.process.lead,
+      '<div class="pipe">'+stages+'</div><div class="pipe-foot">'+D.process.foot+'</div>');
+  }
+  function processEnter(el){ael(el);stagger(qsa(el,'.pstage'),180,function(n){n.classList.add('on');});}
+
   function icpHTML(){
     var reads=D.icp.read.map(function(r){return '<div class="read-item pop"><div class="t">'+r.label+'</div><div class="m">'+r.meta+'</div></div>';}).join('');
     var quals=D.icp.qualifier.map(function(q){return '<div class="qual-item"><span class="tick">'+TICK+'</span>'+q+'</div>';}).join('');
-    return act(1,'Derive the ICP','We don’t guess who buys. We <span class="accent">immerse ourselves in the business and define the ICP.</span>',
-      'The founder’s memo and calls, the category, and our own market research become one precise, checkable definition of who is in-market.',
+    return act(2,'Derive the ICP','We don’t guess who buys. We <span class="accent">immerse ourselves in the business and define the ICP.</span>',
+      'We distill the founder’s memo and calls, the category, and our own market research into one clear, checkable definition of who is in-market.',
       '<div class="icp-grid"><div><div class="col-label">What we work from</div><div class="read-list">'+reads+'</div></div>'+
       '<div class="icp-arrow">'+ARROW+'</div>'+
       '<div><div class="col-label">The ICP qualifier</div><div class="qual-list">'+quals+'</div></div></div>'+
@@ -380,14 +409,14 @@ a{color:inherit;text-decoration:none;}
   }
   function axesHTML(){
     var cards=D.axes.map(function(a){return '<div class="axis-card'+(a.key==='warranty'?' wow':'')+'"><div class="kind">'+a.kind+'</div><div class="nm">'+a.name+'</div><div class="wt">'+a.weight+'<span>%</span></div><div class="wt-track"><div class="wt-fill" data-w="'+a.weight+'"></div></div><div class="ms">'+a.measures+'</div></div>';}).join('');
-    return act(2,'Build the signals','We build the <span class="accent">custom signals</span> that predict a ready buyer.',
+    return act(3,'Build the signals','We build the <span class="accent">custom signals</span> that predict a ready buyer.',
       'Four signals, weighted for this founder. Warranty Burden reads sharpest: a group’s brand mix is public, so we can measure the pain before the first call.',
       '<div class="axes-row">'+cards+'</div>');
   }
   function scanHTML(){
     var dots='';for(var i=0;i<140;i++){dots+='<div class="dot"></div>';}
     var ex='<div class="ex-lead">Excluded up front: the software vendors who sell to dealers, not the dealers themselves.</div>'+D.scan.excludes.map(function(e){return '<span class="ex">'+e+'</span>';}).join('');
-    return act(3,'Scan the market','We scan <span class="accent">the market</span>, US and Canada.',D.scan.query,
+    return act(4,'Scan the market','We scan <span class="accent">the market</span>, US and Canada.',D.scan.query,
       '<div class="scan-wrap"><div class="scan-counter"><div class="n mono" id="scanN">0</div><div class="l" id="scanL">'+D.scan.universeLabel+'</div></div>'+
       '<div class="dot-grid" id="dotGrid">'+dots+'</div>'+
       '<div class="funnel" id="funnel">'+fstat(D.scan.universe,'rooftops',false)+farrow()+fstat(D.scan.groups,'multi-rooftop groups',false)+farrow()+fstat(D.scan.matched,'high-fit matches',true)+'</div>'+
@@ -396,7 +425,7 @@ a{color:inherit;text-decoration:none;}
   }
   function evidenceHTML(){
     var cols=D.enrichments.map(function(e){return '<div class="ev-col"><span class="st">'+TICK+'</span><span class="f">'+e.field+'</span><span class="s">'+e.src+'</span></div>';}).join('');
-    return act(4,'Pull the evidence','We <span class="accent">pull and cite the evidence</span> on every account.',
+    return act(5,'Pull the evidence','We <span class="accent">pull and cite the evidence</span> on every account.',
       'For each account we pull the rooftops, brand mix, DMS, current inspection tooling, open service roles from the job boards, and the name of the buyer, each backed by multiple tiered sources. Nothing ships uncited.',
       '<div class="ev-grid"><div><div class="col-label">Pulled for each account</div><div class="ev-cols">'+cols+'</div></div>'+
       '<div><div class="col-label">Every claim, sourced</div><div class="ev-feed"><div class="fh"><span class="dotpulse"></span> Evidence feed</div><div id="feedList">'+evidenceFeed()+'</div></div></div></div>');
@@ -404,7 +433,7 @@ a{color:inherit;text-decoration:none;}
   function scoreHTML(){
     var hero=D.companies[0];
     var abars=D.axes.map(function(a){return '<div class="abar"><span class="an">'+a.name+'</span><div class="track"><div class="fill" data-v="'+hero.s[a.key]+'"></div></div><span class="av" data-v="'+hero.s[a.key]+'">0.0</span></div>';}).join('');
-    return act(5,'Score 0 to 100','We <span class="accent">score every account</span>, 0 to 100.',
+    return act(6,'Score 0 to 100','We <span class="accent">score every account</span>, 0 to 100.',
       'The four signals combine on this founder’s weights into a single 0-to-100 score. The priority tier comes straight from that number, so the label and the score always agree.',
       '<div class="score-wrap"><div class="formula"><b>0.35</b>·Warranty + <b>0.25</b>·Opportunity + <b>0.25</b>·Tooling + <b>0.15</b>·Hiring</div>'+
       '<div class="hero-score"><div><div class="hero-name">'+hero.name+'<span class="seg">'+hero.seg+'</span></div><div class="abars">'+abars+'</div></div>'+
@@ -415,12 +444,12 @@ a{color:inherit;text-decoration:none;}
   function shortlistHTML(){
     var rows=D.companies.map(function(c,i){return '<div class="row '+qtier(c.tier)+'" data-score="'+c.score+'"><span class="rk">'+(i+1)+'</span><span class="nm">'+c.name+'<span class="sg">'+c.seg+'</span></span><div class="track"><div class="fill"></div></div><span class="sc">0</span></div>';}).join('');
     var pcards=D.partners.map(function(p){return '<div class="pcard"><div class="pn">'+p.name+'</div><div class="ps">'+p.status+'</div><div class="pnote">'+p.note+'</div></div>';}).join('');
-    return act(6,'Curate the shortlist','The accounts <span class="accent">worth walking into.</span>',
+    return act(7,'Curate the shortlist','The accounts <span class="accent">worth walking into.</span>',
       'Ranked by score, grouped by priority, plus the design partners already signed. This is exactly what lands in the dashboard.',
       '<div class="ranked" id="ranked">'+rows+'</div><div class="partners"><div class="ph">Already signed &amp; onboarding</div><div class="prow" id="prow">'+pcards+'</div></div>');
   }
   function networkHTML(){
-    return act(7,'Map the way in','We map the <span class="accent">warm paths in.</span>',
+    return act(8,'Map the way in','We map the <span class="accent">warm paths in.</span>',
       'Primary’s network of partners, advisors, portfolio founders, and operators is where we source warm paths into the shortlist. Each line is a real relationship. Drag to pan, scroll to zoom, hover any node.',
       '<div class="net-wrap"><svg class="net-svg" id="netSvg" viewBox="0 0 1160 600"><g id="netZoom"></g></svg>'+
       '<div class="net-legend">'+
