@@ -248,5 +248,12 @@ window.BUILD_DATA = {
       "Fields Auto Group": ["on"],
       "West Herr Auto Group": ["aa"]
     }
+  },
+
+  // ---- Act 9: convergence — everything flows into the finished dashboard ------
+  converge: {
+    lead: "The ICP, the four signals, the sourced evidence, the scores, the buyers, and the warm paths, all assembled into one live dashboard.",
+    label: "Lantern Intelligence Dashboard",
+    inputs: ["ICP", "Warranty Burden", "Opportunity", "Tooling Gap", "Service Hiring", "Sources & evidence", "Fixed-ops buyers", "Warm paths"]
   }
 };

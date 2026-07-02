@@ -222,6 +222,11 @@ a{color:inherit;text-decoration:none;}
 .net-tip .tby b{color:var(--amber-light);font-weight:600;}
 .net-node{cursor:pointer;}
 
+/* act 9 convergence */
+.conv-wrap{position:relative;max-width:1000px;margin:0 auto;}
+.conv-svg{width:100%;height:min(58vh,500px);display:block;}
+.conv-svg text{user-select:none;}
+
 /* cold + reveal */
 .cold{text-align:center;}
 .cold .mk,.reveal .mk{width:104px;height:104px;margin:0 auto 30px;border-radius:24px;background:linear-gradient(160deg,var(--surface-2),var(--surface));border:1px solid var(--border);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px hsl(36 92% 50% / .2),0 0 66px hsl(36 92% 50% / .3);animation:lantern 4.2s ease-in-out infinite;}
@@ -374,10 +379,11 @@ a{color:inherit;text-decoration:none;}
     {rail:4, html:evidenceHTML, enter:evidenceEnter},
     {rail:5, html:scoreHTML, enter:scoreEnter},
     {rail:6, html:shortlistHTML, enter:shortlistEnter},
-    {rail:7, html:networkHTML, enter:networkEnter, lastContent:true},
+    {rail:7, html:networkHTML, enter:networkEnter},
+    {rail:8, html:convergeHTML, enter:convergeEnter, lastContent:true},
     {rail:'done', html:function(){return '';}, enter:function(){showReveal();}, reveal:true}
   ];
-  var railDefs=['Process','ICP','Signals','Scan','Evidence','Score','Shortlist','Network'];
+  var railDefs=['Process','ICP','Signals','Scan','Evidence','Score','Shortlist','Network','Dashboard'];
   railEl.innerHTML=railDefs.map(function(l,i){return '<div class="seg" data-i="'+i+'"><div class="lbl"><span class="sn">'+(i+1)+'</span> '+l+'</div><div class="track"><div class="fill"></div></div></div>';}).join('');
   qsa(railEl,'.seg').forEach(function(s){s.addEventListener('click',function(){go(parseInt(s.getAttribute('data-i'),10)+1);});});
 
@@ -622,6 +628,42 @@ a{color:inherit;text-decoration:none;}
     svgEl.addEventListener('mouseleave',endDrag);
   }
   function networkEnter(el){ael(el); tipHide(); setTimeout(function(){renderNet(el);},REDUCED?0:120);}
+
+  /* ---------- CONVERGENCE: every input flows into the finished dashboard ---------- */
+  function convergeHTML(){
+    return act(9,'The dashboard','Everything you just saw, <span class="accent">in one place.</span>',
+      D.converge.lead,
+      '<div class="conv-wrap"><svg class="conv-svg" id="convSvg" viewBox="0 0 1160 520"><g id="convG"></g></svg></div>');
+  }
+  function renderConverge(el){
+    var g=el.querySelector('#convG'); g.innerHTML='';
+    var cx=580, cy=250, Rx=430, Ry=185;
+    var inputs=D.converge.inputs, n=inputs.length, pos=[];
+    for(var i=0;i<n;i++){var a=-Math.PI/2+i*(2*Math.PI/n);pos.push({x:cx+Rx*Math.cos(a),y:cy+Ry*Math.sin(a),a:a});}
+    // lines: each input -> center
+    pos.forEach(function(p){g.appendChild(mk('line',{x1:p.x,y1:p.y,x2:cx,y2:cy,stroke:'var(--amber)','stroke-width':1.2,'stroke-opacity':.2,'stroke-linecap':'round'}));});
+    // inward flowing dots (data converging into the dashboard)
+    var flow=mk('g',{}); g.appendChild(flow);
+    pos.forEach(function(p,i){flowDots(flow,p.x,p.y,cx,cy,(i%2?'var(--q-high)':'var(--amber-light)'),2);});
+    // center dashboard preview
+    var iw=430, ih=250, ix=cx-iw/2, iy=cy-ih/2;
+    var defs=mk('defs',{}), cp=mk('clipPath',{id:'convclip'}); cp.appendChild(mk('rect',{x:ix,y:iy,width:iw,height:ih,rx:13})); defs.appendChild(cp); g.appendChild(defs);
+    var img=mk('image',{x:ix,y:iy,width:iw,height:ih,'clip-path':'url(#convclip)',preserveAspectRatio:'xMidYMin slice'});
+    img.setAttribute('href','./assets/dashboard-preview.png');
+    img.setAttributeNS('http://www.w3.org/1999/xlink','href','./assets/dashboard-preview.png');
+    g.appendChild(img);
+    g.appendChild(mk('rect',{x:ix,y:iy,width:iw,height:ih,rx:13,fill:'none',stroke:'var(--amber)','stroke-width':2.4,style:'filter:drop-shadow(0 0 32px hsl(36 92% 50% / .45))'}));
+    var cl=mk('text',{x:cx,y:iy+ih+24,'text-anchor':'middle','font-size':12.5,'font-weight':600,fill:'var(--amber-light)'}); cl.textContent=D.converge.label; g.appendChild(cl);
+    // input nodes on top
+    pos.forEach(function(p,i){
+      var ng=mk('g',{});
+      ng.appendChild(mk('circle',{cx:p.x,cy:p.y,r:6,fill:'var(--surface-2)',stroke:'var(--amber)','stroke-width':1.8}));
+      var below=Math.sin(p.a)>=-0.1, ly=below?p.y+19:p.y-12;
+      var t=mk('text',{x:p.x,y:ly,'text-anchor':'middle','font-size':12,'font-weight':500,fill:'var(--text-mid)'}); t.textContent=inputs[i]; ng.appendChild(t);
+      g.appendChild(ng);
+    });
+  }
+  function convergeEnter(el){ael(el); setTimeout(function(){renderConverge(el);},REDUCED?0:140);}
 
   /* ---------- manual scheduler ---------- */
   var cur=-1;
