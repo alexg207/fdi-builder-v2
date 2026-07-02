@@ -189,6 +189,7 @@ a{color:inherit;text-decoration:none;}
 .net-svg text{user-select:none;}
 .net-legend{position:absolute;left:14px;bottom:12px;display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--text-muted);background:hsl(28 16% 6% / .74);border:1px solid var(--border-soft);border-radius:9px;padding:9px 12px;}
 .net-legend .lg{display:flex;align-items:center;gap:7px;}
+.net-legend .lgh{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint);font-weight:600;margin-bottom:1px;}
 .net-legend .sw{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 .net-legend .ring{width:12px;height:12px;border-radius:50%;border:1.6px solid var(--amber-light);flex-shrink:0;}
 .net-hint{position:absolute;right:14px;bottom:12px;font-size:11px;color:var(--text-faint);letter-spacing:.02em;background:hsl(28 16% 6% / .74);border:1px solid var(--border-soft);border-radius:9px;padding:7px 11px;}
@@ -423,13 +424,17 @@ a{color:inherit;text-decoration:none;}
       'This is the layer no one else has. Primary’s network, partners, advisors, portfolio founders, and operators, carries warm paths into the shortlist. Every line is a relationship that opens a door. Drag to pan, scroll to zoom, hover any node.',
       '<div class="net-wrap"><svg class="net-svg" id="netSvg" viewBox="0 0 1160 600"><g id="netZoom"></g></svg>'+
       '<div class="net-legend">'+
-        '<div class="lg"><span class="ring" style="border-color:var(--text-mid)"></span> Primary connector</div>'+
-        '<div class="lg"><span class="sw" style="background:var(--q-high)"></span> High-priority account</div>'+
+        '<div class="lg lgh">Primary connectors</div>'+
+        '<div class="lg"><span class="sw" style="background:hsl(214 82% 64%)"></span> Primary Partner</div>'+
+        '<div class="lg"><span class="sw" style="background:hsl(190 70% 54%)"></span> Auto-retail Advisor</div>'+
+        '<div class="lg"><span class="sw" style="background:hsl(266 74% 70%)"></span> Portfolio Founder</div>'+
+        '<div class="lg"><span class="sw" style="background:hsl(168 60% 52%)"></span> Operator Network</div>'+
+        '<div class="lg lgh" style="margin-top:5px">Accounts</div>'+
+        '<div class="lg"><span class="sw" style="background:var(--q-high)"></span> High priority</div>'+
         '<div class="lg"><span class="sw" style="background:var(--q-med)"></span> Mid priority</div>'+
-        '<div class="lg"><span class="ring"></span> Multiple warm paths in</div>'+
-        '<div class="lg" style="color:var(--text-faint)">Node size = readiness score</div>'+
+        '<div class="lg"><span class="ring"></span> Multiple warm paths</div>'+
       '</div>'+
-      '<div class="net-hint">drag · scroll · hover</div></div>'+
+      '<div class="net-hint">node size = readiness score · drag · scroll · hover</div></div>'+
       '<div class="net-note">Illustrative warm-path layer. Populated per founder from Primary’s Affinity graph + team LinkedIn connections.</div>');
   }
 
@@ -502,61 +507,67 @@ a{color:inherit;text-decoration:none;}
   function renderNet(el){
     var svgEl=el.querySelector('#netSvg'), zoomG=el.querySelector('#netZoom');
     zoomG.innerHTML='';
-    var cx=580, cy=300, R1=142, Racc=250;
+    var cx=580, cy=300, Rx=400, Ry=235, R1x=205, R1y=128;
     var byName={}; D.companies.forEach(function(c){byName[c.name]=c;});
-    var cons=D.network.connectors;
-    var palette=['hsl(36 92% 55%)','hsl(174 62% 50%)','hsl(244 74% 70%)','hsl(150 55% 52%)','hsl(320 55% 64%)'];
-    // account positions: group by segment, fan evenly around the ring
-    var ent=D.companies.filter(function(c){return c.seg==='Enterprise';});
-    var mid=D.companies.filter(function(c){return c.seg==='Mid-Market';});
-    var ordered=ent.concat(mid), N=ordered.length, pos={};
-    ordered.forEach(function(c,i){ var a=-Math.PI/2+(i/N)*2*Math.PI; pos[c.name]={x:cx+Racc*Math.cos(a),y:cy+Racc*Math.sin(a),a:a}; });
-    function centAng(names){var sx=0,sy=0;names.forEach(function(n){var p=pos[n];if(p){sx+=Math.cos(p.a);sy+=Math.sin(p.a);}});return Math.atan2(sy,sx);}
+    var cons=D.network.connectors, also=D.network.alsoReaches||{};
+    // cool palette — connectors read as a distinct layer from the warm (green/amber) accounts
+    var palette={pp:'hsl(214 82% 64%)',aa:'hsl(190 70% 54%)',pf:'hsl(266 74% 70%)',on:'hsl(168 60% 52%)'};
+    // each connector owns a fixed angular sector; its accounts fan inside it -> no crossing
+    var sectorAng={pp:-Math.PI/2,pf:0,on:Math.PI/2,aa:Math.PI};
+    var pos={}, pathsOf={}, hub={};
+    cons.forEach(function(c){ c.accounts.forEach(function(a){(pathsOf[a]=pathsOf[a]||[]).push(c);}); });
+    Object.keys(also).forEach(function(a){ also[a].forEach(function(k){ var c=cons.filter(function(x){return x.key===k;})[0]; if(c)(pathsOf[a]=pathsOf[a]||[]).push(c); }); });
+    cons.forEach(function(c){
+      var base=sectorAng[c.key]||0;
+      hub[c.key]={x:cx+R1x*Math.cos(base),y:cy+R1y*Math.sin(base),color:palette[c.key]||'hsl(214 80% 64%)'};
+      var n=c.accounts.length, fan=n>=3?0.62:(n===2?0.42:0);
+      c.accounts.forEach(function(a,j){var aa=base-fan+(n>1?2*fan*(j/(n-1)):0);pos[a]={x:cx+Rx*Math.cos(aa),y:cy+Ry*Math.sin(aa),a:aa};});
+    });
     var flow=mk('g',{}); zoomG.appendChild(flow);
-    // hubs at the centroid direction of the accounts each connector reaches
-    var hub=cons.map(function(c,ci){var a=centAng(c.reach);return {x:cx+R1*Math.cos(a),y:cy+R1*Math.sin(a),color:palette[ci%palette.length]};});
-    // edges: center -> hub, hub -> each reached account
-    cons.forEach(function(c,ci){
-      var h=hub[ci];
-      zoomG.appendChild(mk('line',{x1:cx,y1:cy,x2:h.x,y2:h.y,stroke:h.color,'stroke-width':2.4,'stroke-opacity':.5,'stroke-linecap':'round'}));
+    // faint guide ellipse (polish)
+    zoomG.appendChild(mk('ellipse',{cx:cx,cy:cy,rx:Rx,ry:Ry,fill:'none',stroke:'var(--border)','stroke-opacity':.26}));
+    // edges: center -> hub, hub -> its accounts (all within-sector; nothing crosses)
+    cons.forEach(function(c){
+      var h=hub[c.key];
+      zoomG.appendChild(mk('line',{x1:cx,y1:cy,x2:h.x,y2:h.y,stroke:h.color,'stroke-width':2.4,'stroke-opacity':.55,'stroke-linecap':'round'}));
       flowDots(flow,cx,cy,h.x,h.y,h.color,2);
-      c.reach.forEach(function(a){var p=pos[a];if(!p)return;zoomG.appendChild(mk('line',{x1:h.x,y1:h.y,x2:p.x,y2:p.y,stroke:h.color,'stroke-width':1.8,'stroke-opacity':.32,'stroke-linecap':'round'}));});
+      c.accounts.forEach(function(a){var p=pos[a];if(!p)return;zoomG.appendChild(mk('line',{x1:h.x,y1:h.y,x2:p.x,y2:p.y,stroke:h.color,'stroke-width':1.8,'stroke-opacity':.36,'stroke-linecap':'round'}));});
     });
     // account nodes
     Object.keys(pos).forEach(function(a){
       var co=byName[a], p=pos[a]; if(!co)return;
-      var paths=cons.filter(function(c){return c.reach.indexOf(a)>=0;});
-      var col=tierColor(co.tier), rad=Math.max(13,Math.min(30,13+(co.score-70)/23*17));
+      var paths=pathsOf[a]||[], multi=paths.length>1;
+      var col=tierColor(co.tier), rad=Math.max(14,Math.min(30,14+(co.score-70)/23*16));
       var g=mk('g',{class:'net-node'});
-      if(paths.length>1) g.appendChild(mk('circle',{cx:p.x,cy:p.y,r:rad+5,fill:'none',stroke:'var(--amber-light)','stroke-width':1.6,'stroke-opacity':.85}));
+      if(multi) g.appendChild(mk('circle',{cx:p.x,cy:p.y,r:rad+5,fill:'none',stroke:'var(--amber-light)','stroke-width':1.7,'stroke-opacity':.9}));
       g.appendChild(mk('circle',{cx:p.x,cy:p.y,r:rad,fill:tierFill(co.tier),stroke:col,'stroke-width':2}));
       var sn=mk('text',{x:p.x,y:p.y+4,'text-anchor':'middle','font-size':11,'font-weight':600,fill:'var(--text)',style:'font-family:var(--font-mono)'});sn.textContent=co.score;g.appendChild(sn);
-      var lbl=mk('text',{x:p.x,y:p.y+rad+14,'text-anchor':'middle','font-size':10.5,'font-weight':500,fill:'var(--text-mid)'});lbl.textContent=shortName(a);g.appendChild(lbl);
+      var below=Math.sin(p.a)>=-0.15, ly=below?p.y+rad+15:p.y-rad-9;
+      var lbl=mk('text',{x:p.x,y:ly,'text-anchor':'middle','font-size':11,'font-weight':500,fill:'var(--text-mid)'});lbl.textContent=shortName(a);g.appendChild(lbl);
       g.addEventListener('mousemove',function(e){
         var via=paths.map(function(c){return c.role;}).join(', ')||'no mapped path yet';
         var html='<div class="tn">'+a+'</div><div class="tmeta">'+co.seg+' · score '+co.score+' / 100</div>'+
           (co.contact?'<div class="tby">Buyer: <b>'+co.contact.name+'</b><br>'+co.contact.title+'</div>':'')+
-          '<div class="tby">Warm path'+(paths.length>1?'s ('+paths.length+')':'')+' via <b>'+via+'</b></div>';
+          '<div class="tby">Warm path'+(multi?'s ('+paths.length+')':'')+' via <b>'+via+'</b></div>';
         tipShow(e,html);
       });
       g.addEventListener('mouseleave',tipHide);
       zoomG.appendChild(g);
     });
-    // connector hubs (above edges)
-    cons.forEach(function(c,ci){
-      var h=hub[ci];
+    // connector hubs (above edges) — initials only; roles live in the legend
+    cons.forEach(function(c){
+      var h=hub[c.key];
       var g=mk('g',{class:'net-node'});
-      g.appendChild(mk('circle',{cx:h.x,cy:h.y,r:25,fill:'var(--surface-2)',stroke:h.color,'stroke-width':2.6}));
-      var t=mk('text',{x:h.x,y:h.y+4,'text-anchor':'middle','font-size':12,'font-weight':700,fill:'var(--text)'});t.textContent=initials(c.role);g.appendChild(t);
-      var rl=mk('text',{x:h.x,y:h.y+25+13,'text-anchor':'middle','font-size':10,'font-weight':600,fill:h.color});rl.textContent=c.role;g.appendChild(rl);
-      g.addEventListener('mousemove',function(e){tipShow(e,'<div class="tn">'+c.role+'</div><div class="tby">Warm paths into <b>'+c.reach.length+'</b> shortlist accounts</div>');});
+      g.appendChild(mk('circle',{cx:h.x,cy:h.y,r:24,fill:'var(--surface-2)',stroke:h.color,'stroke-width':2.6}));
+      var t=mk('text',{x:h.x,y:h.y+4,'text-anchor':'middle','font-size':12,'font-weight':700,fill:h.color});t.textContent=initials(c.role);g.appendChild(t);
+      g.addEventListener('mousemove',function(e){tipShow(e,'<div class="tn">'+c.role+'</div><div class="tby">Warm paths into <b>'+c.accounts.length+'</b> shortlist accounts</div>');});
       g.addEventListener('mouseleave',tipHide);
       zoomG.appendChild(g);
     });
     // center: Primary
-    zoomG.appendChild(mk('circle',{cx:cx,cy:cy,r:42,fill:'var(--surface-2)',stroke:'var(--amber)','stroke-width':2.6,style:'filter:drop-shadow(0 0 22px hsl(36 92% 50% / .4))'}));
-    var lt=mk('text',{x:cx,y:cy+2,'text-anchor':'middle','font-size':18,'font-weight':700,fill:'var(--text)',style:'font-family:var(--font-display)'});lt.textContent=D.network.hub||'Primary';zoomG.appendChild(lt);
-    var lp=mk('text',{x:cx,y:cy+17,'text-anchor':'middle','font-size':9,'font-weight':500,fill:'var(--text-muted)'});lp.textContent='the network';zoomG.appendChild(lp);
+    zoomG.appendChild(mk('circle',{cx:cx,cy:cy,r:44,fill:'var(--surface-2)',stroke:'var(--amber)','stroke-width':2.6,style:'filter:drop-shadow(0 0 24px hsl(36 92% 50% / .42))'}));
+    var lt=mk('text',{x:cx,y:cy+2,'text-anchor':'middle','font-size':19,'font-weight':700,fill:'var(--text)',style:'font-family:var(--font-display)'});lt.textContent=D.network.hub||'Primary';zoomG.appendChild(lt);
+    var lp=mk('text',{x:cx,y:cy+18,'text-anchor':'middle','font-size':9,'font-weight':500,fill:'var(--text-muted)'});lp.textContent='the network';zoomG.appendChild(lp);
     // pan / zoom
     var view={k:1,x:0,y:0};
     function apply(){zoomG.setAttribute('transform','translate('+view.x+' '+view.y+') scale('+view.k+')');}

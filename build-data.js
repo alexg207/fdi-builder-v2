@@ -198,11 +198,20 @@ window.BUILD_DATA = {
   network: {
     hub: "Primary",
     illustrative: true,
+    // Each connector OWNS a clean set of accounts (its sector on the map). This is a
+    // partition, one primary warm path per account, so the layout never crosses.
     connectors: [
-      { role: "Primary Partner",     reach: ["Penske Automotive Group", "Group 1 Automotive", "AutoCanada", "Ed Napleton Automotive Group"] },
-      { role: "Auto-retail Advisor", reach: ["indiGO Auto Group", "Fields Auto Group", "Krause Auto Group", "West Herr Auto Group"] },
-      { role: "Portfolio Founder",   reach: ["Go Auto", "Group 1 Automotive", "Castle Automotive Group"] },
-      { role: "Operator Network",    reach: ["Penske Automotive Group", "West Herr Auto Group", "Fields Auto Group"] }
-    ]
+      { key: "pp", role: "Primary Partner",     accounts: ["Penske Automotive Group", "Group 1 Automotive", "AutoCanada"] },
+      { key: "aa", role: "Auto-retail Advisor", accounts: ["indiGO Auto Group", "Fields Auto Group", "Krause Auto Group"] },
+      { key: "pf", role: "Portfolio Founder",   accounts: ["Ed Napleton Automotive Group", "Castle Automotive Group"] },
+      { key: "on", role: "Operator Network",    accounts: ["West Herr Auto Group", "Go Auto"] }
+    ],
+    // Secondary warm paths — shown as a ring + in the tooltip, NOT as a crossing edge.
+    alsoReaches: {
+      "Penske Automotive Group": ["on"],
+      "Group 1 Automotive": ["pf"],
+      "Fields Auto Group": ["on"],
+      "West Herr Auto Group": ["aa"]
+    }
   }
 };
