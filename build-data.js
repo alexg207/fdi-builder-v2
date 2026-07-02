@@ -67,7 +67,7 @@ window.BUILD_DATA = {
     universeLabel: "franchised dealership rooftops, US + Canada",
     universe: 18000,          // rooftops in the addressable universe (cited on landing)
     groups: 460,              // multi-rooftop groups that clear the structural gate
-    matched: 15,              // cleared all 5 hard criteria (Webset return)
+    matched: 15,              // strongest matches pulled to enrich (MANY more qualify; 15 = the top set we surfaced)
     curated: 10,              // locked shortlist
     partners: 3,              // signed / onboarding design partners
     query: "Multi-location franchised dealer groups that run their own fixed-ops departments and carry high-warranty brand mix, not the software vendors who sell to them.",
@@ -187,5 +187,22 @@ window.BUILD_DATA = {
     { name: "Prestige Volvo", status: "Signed · live with MVP", note: "Volvo #1-volume NJ, owner is also a Lantern advisor" },
     { name: "Steele Auto Group", status: "Onboarding", note: "~60 rooftops, Canada + Texas, full Korean + German-luxury mix" },
     { name: "Viva & Fiesta Auto Group", status: "Pipeline", note: "El Paso, TX, mass-market + Korean" }
-  ]
+  ],
+
+  // ---- Act 7: the warm-path layer — WHO AT PRIMARY opens the door ------------
+  // The value is PRIMARY's network, not the founder's. Connectors = the people /
+  // relationships Primary has; each carries a warm path INTO shortlist accounts.
+  // ILLUSTRATIVE for now — real named connectors + reach populate per build from
+  // Primary's Affinity graph + team LinkedIn. `reach` uses company names exactly as
+  // in `companies` above, so the map derives each account's score/tier/buyer by lookup.
+  network: {
+    hub: "Primary",
+    illustrative: true,
+    connectors: [
+      { role: "Primary Partner",     reach: ["Penske Automotive Group", "Group 1 Automotive", "AutoCanada", "Ed Napleton Automotive Group"] },
+      { role: "Auto-retail Advisor", reach: ["indiGO Auto Group", "Fields Auto Group", "Krause Auto Group", "West Herr Auto Group"] },
+      { role: "Portfolio Founder",   reach: ["Go Auto", "Group 1 Automotive", "Castle Automotive Group"] },
+      { role: "Operator Network",    reach: ["Penske Automotive Group", "West Herr Auto Group", "Fields Auto Group"] }
+    ]
+  }
 };

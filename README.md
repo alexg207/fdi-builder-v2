@@ -43,14 +43,19 @@ index.html  ──[ Watch how we built this ]──▶  build.html  ──▶  d
 5. **Score 0 to 100** — a hero account's axis scores blend on the founder's weights into a
    composite; tier derived from the score so chip and number can't disagree.
 6. **Curate the shortlist** — the ranked 10 assemble, plus the signed design partners.
-7. **Map the way in** — an interactive **network map** (radial SVG, adapted from the Lyric
-   Network Map): Lantern at center → segment clusters → every target account sized by score
-   and colored by priority, each carrying its named fixed-ops buyer, with the signed design
-   partners as warm anchors. Drag / zoom / hover. This is now core FDI, as important as the
-   dashboard, and derives entirely from the companies + partners in `build-data.js`.
+7. **The way in** — an interactive **network map** (radial SVG, adapted from the Lyric
+   Network Map). **Primary** at center → **Primary's connectors** (partners, advisors,
+   portfolio founders, operators) → the **warm paths they carry into the ICP accounts**.
+   Accounts sized by score / colored by priority, each with its named fixed-ops buyer on
+   hover; multiple-warm-path accounts get a ring. Drag / zoom / hover. The value is Primary's
+   network reaching the shortlist — NOT the founder's. Illustrative for now; real connectors
+   + reach populate per build from Primary's Affinity graph + team LinkedIn. Derives from
+   `build-data.js` (`network.connectors[].reach` references company names). Now core FDI, as
+   important as the dashboard.
 
 Ends on a reveal → Enter the Dashboard. A persistent "Skip to dashboard" sits top-right the
-whole way, so the walkthrough is never forced.
+whole way, so the walkthrough is never forced. `?act=N` deep-links straight to any step
+(handy for demos and QA).
 
 ## Status
 
