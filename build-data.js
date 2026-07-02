@@ -52,11 +52,31 @@ window.BUILD_DATA = {
     lead: "Every build is hands-on. We design the ICP and the signals, work a stack of best-in-class tools to gather and verify the evidence, and check every step ourselves.",
     foot: "Proprietary method · best-in-class tools · human-checked at every stage.",
     stages: [
-      { stage: "Discover",           desc: "We map the market with live semantic search and deep research.", tools: ["Exa Websets", "Parallel"] },
-      { stage: "Design the signals", desc: "The technical core: we study the founder's world and derive the four custom drivers that predict a ready buyer, then weight them.", tools: ["Exa", "Clay", "research"] },
-      { stage: "Enrich & verify",    desc: "We pull firmographics, primary records, live hiring, and the named buyer for every company, tiering and citing every claim.", tools: ["Clay", "SEC EDGAR", "Sumble", "LinkedIn"] },
-      { stage: "Score",              desc: "We weight the four drivers into one 0-to-100 score, every input cited.", tools: ["Claude", "weighted model"] },
-      { stage: "Map the way in",     desc: "We trace warm paths into each account through Primary's relationship graph.", tools: ["Affinity", "LinkedIn"] }
+      { stage: "Discover", tools: ["Exa Websets", "Parallel"], bullets: [
+        "Search the live web semantically, not a bought list",
+        "Surface every multi-rooftop dealer group in the market",
+        "Dedupe down to the real parent companies"
+      ] },
+      { stage: "Design the signals", tools: ["Exa", "Clay", "research"], bullets: [
+        "Study the founder's memo, calls, and category",
+        "Derive the four drivers that predict a ready buyer",
+        "Weight them for this founder (35 / 25 / 25 / 15)"
+      ] },
+      { stage: "Enrich & verify", tools: ["Clay", "SEC EDGAR", "Sumble", "LinkedIn"], bullets: [
+        "Pull rooftops, brand mix, DMS, and current tooling",
+        "Add live hiring and the named fixed-ops buyer",
+        "Tier and cite every claim to a primary source"
+      ] },
+      { stage: "Score", tools: ["Claude", "weighted model"], bullets: [
+        "Combine the four drivers on the founder's weights",
+        "One 0-to-100 score for every account",
+        "Tier comes straight from the score, every input cited"
+      ] },
+      { stage: "Map the way in", tools: ["Affinity", "LinkedIn"], bullets: [
+        "Cross-reference each account against Primary's network",
+        "Surface the warmest path in and who holds it",
+        "Flag the accounts with more than one way in"
+      ] }
     ]
   },
 
@@ -79,7 +99,7 @@ window.BUILD_DATA = {
 
   // ---- Act 3: scan the universe ----------------------------------------------
   scan: {
-    universeLabel: "franchised dealership rooftops, US + Canada",
+    universeLabel: "franchised dealership rooftops",
     universe: 18000,          // rooftops in the addressable universe (cited on landing)
     groups: 460,              // multi-rooftop groups that clear the structural gate
     matched: 15,              // strongest matches pulled to enrich (MANY more qualify; 15 = the top set we surfaced)

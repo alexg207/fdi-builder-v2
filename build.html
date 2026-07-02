@@ -94,6 +94,10 @@ a{color:inherit;text-decoration:none;}
 .wt-fill{height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,var(--amber-dark),var(--amber-light));transition:width 1.1s cubic-bezier(.16,.84,.44,1);}
 .axes-note{text-align:center;font-size:13px;color:var(--text-muted);margin-top:24px;max-width:640px;margin-left:auto;margin-right:auto;}
 .axes-note code{font-family:var(--font-mono);font-size:11.5px;color:var(--amber-light);background:var(--amber-tint);padding:2px 7px;border-radius:5px;}
+.wow-note{max-width:760px;margin:26px auto 0;background:linear-gradient(165deg,var(--amber-tint),transparent);border:1px solid hsl(36 92% 50% / .3);border-radius:13px;padding:17px 22px;text-align:left;}
+.wow-note .wn-eye{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);font-weight:600;margin-bottom:8px;}
+.wow-note p{font-size:13.5px;line-height:1.55;color:var(--text-mid);}
+.wow-note p b{color:var(--text);font-weight:600;}
 
 /* act 1 process / pipeline */
 .pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;max-width:1000px;margin:0 auto;position:relative;}
@@ -101,7 +105,9 @@ a{color:inherit;text-decoration:none;}
 .pstage{position:relative;display:flex;flex-direction:column;background:linear-gradient(165deg,var(--surface-2),var(--surface));border:1px solid var(--border);border-radius:13px;padding:16px 14px;text-align:center;}
 .ps-n{width:30px;height:30px;margin:0 auto 12px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--amber);box-shadow:0 0 0 4px var(--bg),0 0 18px hsl(36 92% 50% / .18);}
 .ps-name{font-size:14.5px;font-weight:600;letter-spacing:-.01em;margin-bottom:9px;}
-.ps-desc{flex:1;font-size:12.5px;line-height:1.5;color:var(--text-mid);margin-bottom:13px;}
+.ps-list{flex:1;list-style:none;margin:0 0 13px;padding:0;text-align:left;display:flex;flex-direction:column;gap:8px;}
+.ps-list li{position:relative;padding-left:15px;font-size:12px;line-height:1.42;color:var(--text-mid);}
+.ps-list li::before{content:"";position:absolute;left:2px;top:6px;width:4px;height:4px;border-radius:50%;background:var(--amber);opacity:.85;}
 .ps-tools{border-top:1px solid var(--border-soft);padding-top:10px;display:flex;flex-wrap:wrap;gap:5px;justify-content:center;}
 .ps-tools .ptl{width:100%;font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--text-faint);font-weight:600;margin-bottom:6px;}
 .ptool{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-size:12px;font-weight:500;color:var(--text);background:var(--bg-2);border:1px solid var(--border-soft);border-radius:7px;padding:4px 9px;letter-spacing:0;}
@@ -119,10 +125,10 @@ a{color:inherit;text-decoration:none;}
 .dot.match{opacity:1;background:var(--amber);box-shadow:0 0 8px hsl(36 92% 50% / .8);}
 .dot.dim{opacity:.16;background:var(--border-soft);box-shadow:none;}
 .funnel{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:12px;}
-.fstat{text-align:center;background:var(--surface);border:1px solid var(--border-soft);border-radius:11px;padding:12px 18px;min-width:120px;}
-.fstat .n{font-family:var(--font-mono);font-size:24px;font-weight:600;color:var(--amber-light);line-height:1;}
+.fstat{text-align:center;min-width:120px;}
+.fstat .n{font-family:var(--font-display);font-size:44px;font-weight:600;color:var(--amber-light);line-height:1;letter-spacing:-.015em;}
 .fstat.match .n{color:var(--q-high);}
-.fstat .l{font-size:11px;color:var(--text-muted);margin-top:6px;}
+.fstat .l{font-size:12px;color:var(--text-muted);margin-top:9px;}
 .funnel .fa{color:var(--text-faint);}
 .funnel .fa svg,.score-arrow svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;}
 .scan-note{text-align:center;font-size:12.5px;color:var(--text-faint);max-width:620px;margin:0 auto 20px;line-height:1.5;}
@@ -390,7 +396,7 @@ a{color:inherit;text-decoration:none;}
         var lg=LOGOS[t]?'<img src="./assets/logos/'+LOGOS[t]+'.png" alt="">':'';
         return '<span class="ptool">'+lg+t+'</span>';
       }).join('');
-      return '<div class="pstage pop"><div class="ps-n">'+(i+1)+'</div><div class="ps-name">'+s.stage+'</div><div class="ps-desc">'+s.desc+'</div><div class="ps-tools"><span class="ptl">Tools</span>'+tools+'</div></div>';
+      return '<div class="pstage pop"><div class="ps-n">'+(i+1)+'</div><div class="ps-name">'+s.stage+'</div><ul class="ps-list">'+s.bullets.map(function(b){return '<li>'+b+'</li>';}).join('')+'</ul><div class="ps-tools"><span class="ptl">Tools</span>'+tools+'</div></div>';
     }).join('');
     return act(1,'The process','This isn’t a list buy. It’s <span class="accent">hands-on research.</span>',
       D.process.lead,
@@ -402,7 +408,7 @@ a{color:inherit;text-decoration:none;}
     var reads=D.icp.read.map(function(r){return '<div class="read-item pop"><div class="t">'+r.label+'</div><div class="m">'+r.meta+'</div></div>';}).join('');
     var quals=D.icp.qualifier.map(function(q){return '<div class="qual-item"><span class="tick">'+TICK+'</span>'+q+'</div>';}).join('');
     return act(2,'Derive the ICP','We don’t guess who buys. We <span class="accent">immerse ourselves in the business and define the ICP.</span>',
-      'We distill the founder’s memo and calls, the category, and our own market research into one clear, checkable definition of who is in-market.',
+      'We read the founder’s memo and calls, study the category, and run our own market research, then write down exactly who counts as a target, in plain criteria we can check.',
       '<div class="icp-grid"><div><div class="col-label">What we work from</div><div class="read-list">'+reads+'</div></div>'+
       '<div class="icp-arrow">'+ARROW+'</div>'+
       '<div><div class="col-label">The ICP qualifier</div><div class="qual-list">'+quals+'</div></div></div>'+
@@ -411,13 +417,14 @@ a{color:inherit;text-decoration:none;}
   function axesHTML(){
     var cards=D.axes.map(function(a){return '<div class="axis-card'+(a.key==='warranty'?' wow':'')+'"><div class="kind">'+a.kind+'</div><div class="nm">'+a.name+'</div><div class="wt">'+a.weight+'<span>%</span></div><div class="wt-track"><div class="wt-fill" data-w="'+a.weight+'"></div></div><div class="ms">'+a.measures+'</div></div>';}).join('');
     return act(3,'Build the signals','We build the <span class="accent">custom signals</span> that predict a ready buyer.',
-      'Four signals, weighted for this founder. Warranty Burden reads sharpest: a group’s brand mix is public, so we can measure the pain before the first call.',
-      '<div class="axes-row">'+cards+'</div>');
+      'Four signals, weighted for this founder. Warranty Burden reads sharpest, and it is the whole wedge, so here is the reasoning behind it.',
+      '<div class="axes-row">'+cards+'</div>'+
+      '<div class="wow-note"><div class="wn-eye">Why brand mix is the sharpest signal</div><p>Korean franchises (Hyundai, Genesis, Kia) and luxury-German franchises (BMW, Mercedes, Porsche, Audi) require photo and video proof of <b>every part</b> on a warranty claim, and they run the highest warranty volume. That documentation is exactly the work Lantern automates, so the groups heaviest in those brands feel the most pain. And a group’s franchise mix is public, so the readiest accounts show themselves before we ever place a call.</p></div>');
   }
   function scanHTML(){
     var dots='';for(var i=0;i<140;i++){dots+='<div class="dot"></div>';}
     var ex='<div class="ex-lead">Excluded up front: the software vendors who sell to dealers, not the dealers themselves.</div>'+D.scan.excludes.map(function(e){return '<span class="ex">'+e+'</span>';}).join('');
-    return act(4,'Scan the market','We scan <span class="accent">the market</span>, US and Canada.',D.scan.query,
+    return act(4,'Scan the market','We scan <span class="accent">the market.</span>',D.scan.query,
       '<div class="scan-wrap"><div class="scan-counter"><div class="n mono" id="scanN">0</div><div class="l" id="scanL">'+D.scan.universeLabel+'</div></div>'+
       '<div class="dot-grid" id="dotGrid">'+dots+'</div>'+
       '<div class="funnel" id="funnel">'+fstat(D.scan.universe,'rooftops',false)+farrow()+fstat(D.scan.groups,'multi-rooftop groups',false)+farrow()+fstat(D.scan.matched,'high-fit matches',true)+'</div>'+
@@ -451,7 +458,7 @@ a{color:inherit;text-decoration:none;}
   }
   function networkHTML(){
     return act(8,'Map the way in','We map the <span class="accent">warm paths in.</span>',
-      'Primary’s network of partners, advisors, founders, and operators is where we source warm paths into the shortlist. Each line is a real relationship. Drag to pan, scroll to zoom, hover any node.',
+      'Through Primary’s network of partners, advisors, founders, and operators, we already have warm introductions into much of the shortlist. Every line here is a real relationship.',
       '<div class="net-wrap"><svg class="net-svg" id="netSvg" viewBox="0 0 1160 600"><g id="netZoom"></g></svg>'+
       '<div class="net-legend">'+
         '<div class="lg"><span class="ring" style="border-color:var(--text-mid)"></span> Primary connector</div>'+
@@ -508,7 +515,7 @@ a{color:inherit;text-decoration:none;}
     var f=[['1','SEC','Penske 2024 Form 10-K, 72% premium-brand revenue'],['2','Automotive News','2026 Top 150 Dealership Groups'],['1','Case study','Dealertrack + Xtime MPI at Ed Napleton'],['job','Careers','Group 1, 175 technician + 65 advisor reqs'],['2','CBT News','West Herr equipped ~650 techs with video MPI'],['1','Pon Holdings','indiGO ultra-luxury portfolio record'],['li','LinkedIn','Fixed Ops Director identified, 9 of 10 accounts'],['1','SEC','Group 1 2024 10-K, 145 US dealerships'],['2','Car Dealership Guy','Go Auto reaches 76 rooftops']];
     return f.map(function(x){var cls=x[0]==='1'?'t1':'t2';return '<div class="feed-line"><span class="tt '+cls+'">'+x[1]+'</span><span class="tx">'+x[2]+'</span></div>';}).join('');
   }
-  function fstat(n,l,m){return '<div class="fstat'+(m?' match':'')+' pop"><div class="n mono">'+fmt(n)+'</div><div class="l">'+l+'</div></div>';}
+  function fstat(n,l,m){return '<div class="fstat'+(m?' match':'')+' pop"><div class="n">'+fmt(n)+'</div><div class="l">'+l+'</div></div>';}
   function farrow(){return '<span class="fa">'+ARROW+'</span>';}
   function act(n,eyebrow,title,narr,body){return '<div class="act"><div class="act-eyebrow"><span class="bar"></span><span class="step-n">0'+n+'</span> '+eyebrow+' <span class="bar"></span></div><h2 class="act-title">'+title+'</h2><p class="act-narr">'+narr+'</p><div class="act-body">'+body+'</div></div>';}
 
