@@ -254,6 +254,15 @@ window.BUILD_DATA = {
   converge: {
     lead: "The ICP, the four signals, the sourced evidence, the scores, the buyers, and the warm paths, all assembled into one live dashboard.",
     label: "Lantern Intelligence Dashboard",
-    inputs: ["ICP", "Warranty Burden", "Opportunity", "Tooling Gap", "Service Hiring", "Sources & evidence", "Fixed-ops buyers", "Warm paths"]
+    inputs: [
+      { label: "ICP", logo: "exa" },
+      { label: "Warranty Burden", logo: "clay" },
+      { label: "Opportunity", logo: "sec" },
+      { label: "Tooling Gap", logo: "parallel" },
+      { label: "Service Hiring", logo: "sumble" },
+      { label: "Sources & evidence", logo: "exa" },
+      { label: "Fixed-ops buyers", logo: "linkedin" },
+      { label: "Warm paths", logo: "affinity" }
+    ]
   }
 };

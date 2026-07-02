@@ -533,11 +533,12 @@ a{color:inherit;text-decoration:none;}
   function tipHide(){netTip.classList.remove('on');}
   function shortName(a){return a.replace(/ (Automotive |Auto )?Group$/,'').replace(/ Automotive$/,'');}
   function initials(s){return s.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();}
-  function flowDots(layer,x1,y1,x2,y2,cls,n){
+  function flowDots(layer,x1,y1,x2,y2,cls,n,r){
     if(REDUCED)return;
+    r=r||2.4;
     var dist=Math.hypot(x2-x1,y2-y1),dur=2.4*Math.max(1.5,Math.min(2.8,dist/120));
     for(var i=0;i<n;i++){
-      var c=mk('circle',{r:2.4,fill:cls,'fill-opacity':.95});
+      var c=mk('circle',{r:r,fill:cls,'fill-opacity':.95});
       c.appendChild(mk('animate',{attributeName:'cx',values:x1+';'+x2,dur:dur+'s',begin:(-i*dur/n)+'s',repeatCount:'indefinite',calcMode:'linear'}));
       c.appendChild(mk('animate',{attributeName:'cy',values:y1+';'+y2,dur:dur+'s',begin:(-i*dur/n)+'s',repeatCount:'indefinite',calcMode:'linear'}));
       layer.appendChild(c);
@@ -637,29 +638,48 @@ a{color:inherit;text-decoration:none;}
   }
   function renderConverge(el){
     var g=el.querySelector('#convG'); g.innerHTML='';
+    var XL='http://www.w3.org/1999/xlink';
     var cx=580, cy=250, Rx=430, Ry=185;
+    var iw=430, ih=250, ix=cx-iw/2, iy=cy-ih/2;
     var inputs=D.converge.inputs, n=inputs.length, pos=[];
     for(var i=0;i<n;i++){var a=-Math.PI/2+i*(2*Math.PI/n);pos.push({x:cx+Rx*Math.cos(a),y:cy+Ry*Math.sin(a),a:a});}
+    // midpoint of the exposed (outside-the-dashboard) part of each path — where the logo rides
+    function logoPos(px,py){
+      var dx=cx-px, dy=cy-py, ts=[];
+      function chk(t){if(t>0&&t<1){var X=px+dx*t,Y=py+dy*t;if(X>=ix-0.5&&X<=ix+iw+0.5&&Y>=iy-0.5&&Y<=iy+ih+0.5)ts.push(t);}}
+      if(dx!==0){chk((ix-px)/dx);chk((ix+iw-px)/dx);}
+      if(dy!==0){chk((iy-py)/dy);chk((iy+ih-py)/dy);}
+      var tin=ts.length?Math.min.apply(null,ts):0.5, t=tin*0.5;
+      return {x:px+dx*t,y:py+dy*t};
+    }
     // lines: each input -> center
     pos.forEach(function(p){g.appendChild(mk('line',{x1:p.x,y1:p.y,x2:cx,y2:cy,stroke:'var(--amber)','stroke-width':1.2,'stroke-opacity':.2,'stroke-linecap':'round'}));});
-    // inward flowing dots (data converging into the dashboard)
+    // big inward flowing dots (data converging into the dashboard)
     var flow=mk('g',{}); g.appendChild(flow);
-    pos.forEach(function(p,i){flowDots(flow,p.x,p.y,cx,cy,(i%2?'var(--q-high)':'var(--amber-light)'),2);});
+    pos.forEach(function(p,i){flowDots(flow,p.x,p.y,cx,cy,(i%2?'var(--q-high)':'var(--amber-light)'),3,6);});
     // center dashboard preview
-    var iw=430, ih=250, ix=cx-iw/2, iy=cy-ih/2;
     var defs=mk('defs',{}), cp=mk('clipPath',{id:'convclip'}); cp.appendChild(mk('rect',{x:ix,y:iy,width:iw,height:ih,rx:13})); defs.appendChild(cp); g.appendChild(defs);
     var img=mk('image',{x:ix,y:iy,width:iw,height:ih,'clip-path':'url(#convclip)',preserveAspectRatio:'xMidYMin slice'});
     img.setAttribute('href','./assets/dashboard-preview.png');
-    img.setAttributeNS('http://www.w3.org/1999/xlink','href','./assets/dashboard-preview.png');
+    img.setAttributeNS(XL,'href','./assets/dashboard-preview.png');
     g.appendChild(img);
     g.appendChild(mk('rect',{x:ix,y:iy,width:iw,height:ih,rx:13,fill:'none',stroke:'var(--amber)','stroke-width':2.4,style:'filter:drop-shadow(0 0 32px hsl(36 92% 50% / .45))'}));
     var cl=mk('text',{x:cx,y:iy+ih+24,'text-anchor':'middle','font-size':12.5,'font-weight':600,fill:'var(--amber-light)'}); cl.textContent=D.converge.label; g.appendChild(cl);
+    // tool logo riding each data path (logo only, no label)
+    pos.forEach(function(p,i){
+      var lg=inputs[i].logo; if(!lg)return;
+      var lp=logoPos(p.x,p.y), sz=30;
+      g.appendChild(mk('rect',{x:lp.x-sz/2,y:lp.y-sz/2,width:sz,height:sz,rx:7,fill:'#fff',stroke:'var(--border)','stroke-width':1}));
+      var im=mk('image',{x:lp.x-sz/2+4,y:lp.y-sz/2+4,width:sz-8,height:sz-8,preserveAspectRatio:'xMidYMid meet'});
+      im.setAttribute('href','./assets/logos/'+lg+'.png'); im.setAttributeNS(XL,'href','./assets/logos/'+lg+'.png');
+      g.appendChild(im);
+    });
     // input nodes on top
     pos.forEach(function(p,i){
       var ng=mk('g',{});
       ng.appendChild(mk('circle',{cx:p.x,cy:p.y,r:6,fill:'var(--surface-2)',stroke:'var(--amber)','stroke-width':1.8}));
       var below=Math.sin(p.a)>=-0.1, ly=below?p.y+19:p.y-12;
-      var t=mk('text',{x:p.x,y:ly,'text-anchor':'middle','font-size':12,'font-weight':500,fill:'var(--text-mid)'}); t.textContent=inputs[i]; ng.appendChild(t);
+      var t=mk('text',{x:p.x,y:ly,'text-anchor':'middle','font-size':12,'font-weight':500,fill:'var(--text-mid)'}); t.textContent=inputs[i].label; ng.appendChild(t);
       g.appendChild(ng);
     });
   }
