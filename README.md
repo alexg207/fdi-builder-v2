@@ -21,9 +21,11 @@ index.html  ──[ Watch how we built this ]──▶  build.html  ──▶  d
 ```
 
 - **`index.html`** — landing / cover page (v1, lightly rewired to feature the cinematic).
-- **`build.html`** — NEW. The 6-act cinematic. Pre-baked and deterministic (no live API
-  calls), so it plays the same every time and never fails mid-demo. Autoplays; `space`
-  advances, `esc` skips, click advances. Reduced-motion aware.
+- **`build.html`** — NEW. The 7-act walkthrough. Pre-baked and deterministic (no live API
+  calls), so it plays the same every time and never fails mid-demo. **Manual advance** — a
+  clear "Continue" button moves you through at your own pace (`space`/`→` next, `←` back,
+  `esc` skips straight to the dashboard, clickable progress rail jumps to any step).
+  Reduced-motion aware.
 - **`dashboard.html`** — the interactive intelligence dashboard (v1).
 - **`build-data.js`** — the ONLY founder-specific file the cinematic reads. Extracted from
   `config.json`, `webset-spec.json`, `phase7-scored.json`, `companies-10.json`. Regenerate
@@ -41,8 +43,14 @@ index.html  ──[ Watch how we built this ]──▶  build.html  ──▶  d
 5. **Score 0 to 100** — a hero account's axis scores blend on the founder's weights into a
    composite; tier derived from the score so chip and number can't disagree.
 6. **Curate the shortlist** — the ranked 10 assemble, plus the signed design partners.
+7. **Map the way in** — an interactive **network map** (radial SVG, adapted from the Lyric
+   Network Map): Lantern at center → segment clusters → every target account sized by score
+   and colored by priority, each carrying its named fixed-ops buyer, with the signed design
+   partners as warm anchors. Drag / zoom / hover. This is now core FDI, as important as the
+   dashboard, and derives entirely from the companies + partners in `build-data.js`.
 
-Ends on a reveal → Enter the Dashboard.
+Ends on a reveal → Enter the Dashboard. A persistent "Skip to dashboard" sits top-right the
+whole way, so the walkthrough is never forced.
 
 ## Status
 
