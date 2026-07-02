@@ -254,15 +254,17 @@ window.BUILD_DATA = {
   converge: {
     lead: "It all lands in one place: who to call, why they are ready, and how to get in.",
     label: "Lantern Intelligence Dashboard",
+    // the actual COMPONENTS of the FDI engine (orbit bubbles), each with the real
+    // tools that power it. Tools repeat across components on purpose.
     inputs: [
-      { label: "ICP", logo: "exa" },
-      { label: "Warranty Burden", logo: "clay" },
-      { label: "Opportunity", logo: "sec" },
-      { label: "Tooling Gap", logo: "parallel" },
-      { label: "Service Hiring", logo: "sumble" },
-      { label: "Sources & evidence", logo: "exa" },
-      { label: "Fixed-ops buyers", logo: "linkedin" },
-      { label: "Warm paths", logo: "affinity" }
+      { label: "ICP generator",      tools: ["exa", "claude"] },
+      { label: "ICP scanner",        tools: ["exa", "parallel"] },
+      { label: "Custom signals",     tools: ["exa", "clay"] },
+      { label: "Deep research",      tools: ["exa", "parallel"] },
+      { label: "Evidence & sourcing", tools: ["sec", "clay", "sumble"] },
+      { label: "Scoring model",      tools: ["claude"] },
+      { label: "Contact finder",     tools: ["linkedin", "clay"] },
+      { label: "Network map",        tools: ["affinity", "linkedin"] }
     ]
   }
 };
