@@ -938,7 +938,9 @@ a{color:inherit;text-decoration:none;}
         if(multi) g.appendChild(mk('circle',{cx:px,cy:py,r:rad+5,fill:'none',stroke:'hsl('+accHS()+' 70%)','stroke-width':1.6,'stroke-opacity':.9}));
         g.appendChild(mk('circle',{cx:px,cy:py,r:rad,fill:scoreFillSvg(co.score),stroke:scoreTone(co.score),'stroke-width':2}));
         var sn=mk('text',{x:px,y:py+4,'text-anchor':'middle','font-size':11,'font-weight':600,fill:'hsl(0 0% 97%)',style:'font-family:var(--mono)'});sn.textContent=co.score;g.appendChild(sn);
-        var lbl=mk('text',{x:px,y:py-rad-9,'text-anchor':'middle','font-size':11,'font-weight':500,fill:'hsl(225 8% 76%)'});lbl.textContent=SHORT[a]||a;g.appendChild(lbl);
+        var lbl=mk('text',{x:px,y:py-rad-9,'text-anchor':'middle','font-size':11,'font-weight':500,fill:'hsl(225 8% 76%)',
+          stroke:'hsl(240 14% 5%)','stroke-width':4,'paint-order':'stroke','stroke-linejoin':'round'});
+        lbl.textContent=SHORT[a]||a;g.appendChild(lbl);
         g.addEventListener('mousemove',function(e){
           var via=paths.map(function(cc){return cc.role;}).join(', ')||'no mapped path yet';
           var html='<div class="tn">'+a+'</div><div class="tmeta">'+co.seg+' · score '+co.score+' / 100</div>'+
@@ -949,11 +951,16 @@ a{color:inherit;text-decoration:none;}
         g.addEventListener('mouseleave',tipHide);
         zoomG.appendChild(g);
       });
-      // connector node: initials only — roles live in the color legend +
-      // hover tooltip, so no label can collide with nodes or edges
+      // connector node with role label BELOW it — the zone between the
+      // connector ring and Primary is empty, and the arc curvature staggers
+      // neighboring labels vertically, so nothing can collide. A canvas-
+      // colored halo keeps the text legible where the radial edge passes.
       var cg=mk('g',{class:'net-node'});
       cg.appendChild(mk('circle',{cx:ccx,cy:ccy,r:23,fill:'hsl(240 10% 12%)',stroke:col,'stroke-width':2.4}));
       var it=mk('text',{x:ccx,y:ccy+4,'text-anchor':'middle','font-size':11.5,'font-weight':700,fill:col});it.textContent=initials(c.role);cg.appendChild(it);
+      var rl=mk('text',{x:ccx,y:ccy+39,'text-anchor':'middle','font-size':11.5,'font-weight':600,fill:col,
+        stroke:'hsl(240 14% 5%)','stroke-width':4,'paint-order':'stroke','stroke-linejoin':'round'});
+      rl.textContent=c.role;cg.appendChild(rl);
       cg.addEventListener('mousemove',function(e){tipShow(e,'<div class="tn">'+c.role+'</div><div class="tby">Warm paths into <b>'+c.accounts.length+'</b> shortlist accounts</div>');});
       cg.addEventListener('mouseleave',tipHide);
       zoomG.appendChild(cg);
