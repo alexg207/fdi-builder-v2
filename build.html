@@ -15,8 +15,6 @@
   --border:hsl(34 18% 20%); --border-soft:hsl(34 14% 17%);
   --text:hsl(40 30% 96%); --text-mid:hsl(38 16% 78%); --text-muted:hsl(36 12% 62%); --text-faint:hsl(34 10% 48%);
   --q-high:hsl(150 58% 52%); --q-high-d:hsl(150 46% 40%);
-  --q-med:hsl(38 95% 56%);  --q-med-d:hsl(34 90% 44%);
-  --q-low:hsl(30 42% 52%);  --q-low-d:hsl(30 34% 42%);
   --font-sans:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;
   --font-display:'Newsreader',Georgia,'Times New Roman',serif;
   --font-mono:'JetBrains Mono',ui-monospace,'SF Mono',Consolas,monospace;
@@ -173,9 +171,9 @@ a{color:inherit;text-decoration:none;}
 .abar .av{font-family:var(--font-mono);font-size:12px;color:var(--text-mid);text-align:right;}
 .score-arrow{display:flex;align-items:center;justify-content:center;color:var(--amber);}
 .composite{text-align:center;background:linear-gradient(165deg,var(--surface-2),var(--surface));border:1px solid var(--border);border-radius:16px;padding:22px 18px;}
-.composite .big{font-family:var(--font-mono);font-size:56px;font-weight:600;line-height:1;letter-spacing:-.03em;color:var(--q-high);}
+.composite .big{font-family:var(--font-mono);font-size:56px;font-weight:600;line-height:1;letter-spacing:-.03em;color:var(--amber-light);}
 .composite .big .u{font-size:20px;color:var(--text-faint);}
-.composite .tier{display:inline-block;margin-top:12px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:7px;background:hsl(150 40% 30% / .25);color:var(--q-high);}
+.composite .tier{display:inline-block;margin-top:12px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:7px;background:var(--amber-tint);color:var(--amber-light);}
 .score-cap{text-align:center;font-size:13px;color:var(--text-muted);margin-top:24px;}
 
 /* act 6 ranked list */
@@ -188,10 +186,7 @@ a{color:inherit;text-decoration:none;}
 .row .nm .sg{font-size:10.5px;color:var(--text-faint);font-weight:500;margin-left:7px;}
 .row .track{height:7px;border-radius:4px;background:var(--border-soft);overflow:hidden;}
 .row .fill{height:100%;width:0;border-radius:4px;transition:width .8s cubic-bezier(.16,.84,.44,1);}
-.q-high .fill{background:linear-gradient(90deg,var(--q-high-d),var(--q-high));} .q-high .sc{color:var(--q-high);}
-.q-med .fill{background:linear-gradient(90deg,var(--q-med-d),var(--q-med));} .q-med .sc{color:var(--q-med);}
-.q-low .fill{background:linear-gradient(90deg,var(--q-low-d),var(--q-low));} .q-low .sc{color:var(--q-low);}
-.row .sc{font-family:var(--font-mono);font-size:15px;font-weight:600;text-align:right;}
+.row .sc{font-family:var(--font-mono);font-size:15px;font-weight:600;text-align:right;color:var(--amber-light);}
 .partners{max-width:720px;margin:16px auto 0;}
 .partners .ph{text-align:center;font-size:12px;color:var(--text-faint);letter-spacing:.04em;margin-bottom:10px;}
 .prow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
@@ -364,9 +359,11 @@ a{color:inherit;text-decoration:none;}
     requestAnimationFrame(step);
   }
   function stagger(nodes,gap,fn){nodes.forEach(function(n,i){setTimeout(function(){fn(n,i);},REDUCED?0:i*gap);});}
-  function qtier(t){return t==='high'?'q-high':(t==='med'?'q-med':'q-low');}
-  function tierColor(t){return t==='high'?'var(--q-high)':t==='med'?'var(--q-med)':'var(--q-low)';}
-  function tierFill(t){return t==='high'?'hsl(150 42% 30% / .28)':t==='med'?'hsl(38 60% 34% / .24)':'hsl(30 40% 34% / .2)';}
+  /* score -> warm amber tone. Higher score = brighter; no stoplight, every account reads as strong. */
+  function toneL(score){var t=Math.max(0,Math.min(1,(score-70)/25));return 46+Math.round(t*16);}
+  function scoreTone(score){return 'hsl(36 92% '+toneL(score)+'%)';}
+  function scoreToneD(score){return 'hsl(34 90% '+(toneL(score)-14)+'%)';}
+  function scoreFillSvg(score){return 'hsl(36 72% '+(toneL(score)-15)+'% / .26)';}
   function qsa(el,s){return Array.prototype.slice.call(el.querySelectorAll(s));}
   function ael(el){var a=el.querySelector('.act')||el.firstElementChild;if(a){a.classList.remove('enter');void a.offsetWidth;a.classList.add('enter');}}
 
@@ -404,7 +401,7 @@ a{color:inherit;text-decoration:none;}
       }).join('');
       return '<div class="pstage pop"><div class="ps-n">'+(i+1)+'</div><div class="ps-name">'+s.stage+'</div><ul class="ps-list">'+s.bullets.map(function(b){return '<li>'+b+'</li>';}).join('')+'</ul><div class="ps-tools"><span class="ptl">Tools</span>'+tools+'</div></div>';
     }).join('');
-    return act(1,'The process','This isn’t a list buy. It’s <span class="accent">hands-on research.</span>',
+    return act(1,'The process','Hands-on research, <span class="accent">account by account.</span>',
       D.process.lead,
       '<div class="pipe">'+stages+'</div><div class="pipe-foot">'+D.process.foot+'</div>');
   }
@@ -413,7 +410,7 @@ a{color:inherit;text-decoration:none;}
   function icpHTML(){
     var reads=D.icp.read.map(function(r){return '<div class="read-item pop"><div class="t">'+r.label+'</div><div class="m">'+r.meta+'</div></div>';}).join('');
     var quals=D.icp.qualifier.map(function(q){return '<div class="qual-item"><span class="tick">'+TICK+'</span>'+q+'</div>';}).join('');
-    return act(2,'Derive the ICP','We don’t guess who buys. We <span class="accent">immerse ourselves in the business and define the ICP.</span>',
+    return act(2,'Derive the ICP','We <span class="accent">immerse in the business</span> to define exactly who buys.',
       'We read the founder’s memo and calls, study the category, and run our own market research, then write down exactly who counts as a target, in plain criteria we can check.',
       '<div class="icp-grid"><div><div class="col-label">What we work from</div><div class="read-list">'+reads+'</div></div>'+
       '<div class="icp-arrow">'+ARROW+'</div>'+
@@ -448,18 +445,18 @@ a{color:inherit;text-decoration:none;}
     var hero=D.companies[0];
     var abars=D.axes.map(function(a){return '<div class="abar"><span class="an">'+a.name+'</span><div class="track"><div class="fill" data-v="'+hero.s[a.key]+'"></div></div><span class="av" data-v="'+hero.s[a.key]+'">0.0</span></div>';}).join('');
     return act(6,'Score 0 to 100','We <span class="accent">score every account</span>, 0 to 100.',
-      'The four signals combine on this founder’s weights into a single 0-to-100 score. The priority tier comes straight from that number, so the label and the score always agree.',
+      'The four signals combine on this founder’s weights into a single 0-to-100 score, cited input by input. The score sets the order you work the list — not whether an account is worth it. Every account here already cleared the bar.',
       '<div class="score-wrap"><div class="formula"><b>0.35</b>·Warranty + <b>0.25</b>·Opportunity + <b>0.25</b>·Tooling + <b>0.15</b>·Hiring</div>'+
       '<div class="hero-score"><div><div class="hero-name">'+hero.name+'<span class="seg">'+hero.seg+'</span></div><div class="abars">'+abars+'</div></div>'+
       '<div class="score-arrow">'+ARROW+'</div>'+
-      '<div class="composite"><div class="big"><span id="compN">0</span><span class="u">/100</span></div><div class="tier">HIGH</div></div></div>'+
+      '<div class="composite"><div class="big"><span id="compN">0</span><span class="u">/100</span></div><div class="tier">Top match</div></div></div>'+
       '<div class="score-cap">Every number backed by a cited source.</div></div>');
   }
   function shortlistHTML(){
-    var rows=D.companies.map(function(c,i){return '<div class="row '+qtier(c.tier)+'" data-score="'+c.score+'"><span class="rk">'+(i+1)+'</span><span class="nm">'+c.name+'<span class="sg">'+c.seg+'</span></span><div class="track"><div class="fill"></div></div><span class="sc">0</span></div>';}).join('');
+    var rows=D.companies.map(function(c,i){return '<div class="row" data-score="'+c.score+'"><span class="rk">'+(i+1)+'</span><span class="nm">'+c.name+'<span class="sg">'+c.seg+'</span></span><div class="track"><div class="fill" style="background:linear-gradient(90deg,'+scoreToneD(c.score)+','+scoreTone(c.score)+')"></div></div><span class="sc" style="color:'+scoreTone(c.score)+'">0</span></div>';}).join('');
     var pcards=D.partners.map(function(p){return '<div class="pcard"><div class="pn">'+p.name+'</div><div class="ps">'+p.status+'</div><div class="pnote">'+p.note+'</div></div>';}).join('');
     return act(7,'Curate the shortlist','The accounts <span class="accent">worth walking into.</span>',
-      'Ranked by score, grouped by priority, plus the design partners already signed. This is exactly what lands in the dashboard.',
+      'All 10 are the strongest of ~18,000 — every one cleared a high bar. The score sets the order you work them, not whether they’re worth it. Below sit the design partners already signed.',
       '<div class="ranked" id="ranked">'+rows+'</div><div class="partners"><div class="ph">Already signed &amp; onboarding</div><div class="prow" id="prow">'+pcards+'</div></div>');
   }
   function networkHTML(){
@@ -469,8 +466,7 @@ a{color:inherit;text-decoration:none;}
       '<div class="net-legend">'+
         '<div class="lg"><span class="ring" style="border-color:var(--text-mid)"></span> Primary connector</div>'+
         '<div class="lg lgh" style="margin-top:5px">Accounts</div>'+
-        '<div class="lg"><span class="sw" style="background:var(--q-high)"></span> High priority</div>'+
-        '<div class="lg"><span class="sw" style="background:var(--q-med)"></span> Mid priority</div>'+
+        '<div class="lg"><span class="sw" style="background:linear-gradient(90deg,'+scoreToneD(74)+','+scoreTone(93)+')"></span> Warmer = higher readiness</div>'+
         '<div class="lg"><span class="ring"></span> Multiple warm paths</div>'+
       '</div>'+
       '<div class="net-hint">node size = readiness score · drag · scroll · hover</div></div>'+
@@ -579,10 +575,10 @@ a{color:inherit;text-decoration:none;}
     Object.keys(pos).forEach(function(a){
       var co=byName[a], p=pos[a]; if(!co)return;
       var paths=pathsOf[a]||[], multi=paths.length>1;
-      var col=tierColor(co.tier), rad=Math.max(14,Math.min(30,14+(co.score-70)/23*16));
+      var col=scoreTone(co.score), rad=Math.max(14,Math.min(30,14+(co.score-70)/23*16));
       var g=mk('g',{class:'net-node'});
       if(multi) g.appendChild(mk('circle',{cx:p.x,cy:p.y,r:rad+5,fill:'none',stroke:'var(--amber-light)','stroke-width':1.7,'stroke-opacity':.9}));
-      g.appendChild(mk('circle',{cx:p.x,cy:p.y,r:rad,fill:tierFill(co.tier),stroke:col,'stroke-width':2}));
+      g.appendChild(mk('circle',{cx:p.x,cy:p.y,r:rad,fill:scoreFillSvg(co.score),stroke:col,'stroke-width':2}));
       var sn=mk('text',{x:p.x,y:p.y+4,'text-anchor':'middle','font-size':11,'font-weight':600,fill:'var(--text)',style:'font-family:var(--font-mono)'});sn.textContent=co.score;g.appendChild(sn);
       var below=Math.sin(p.a)>=-0.15, ly=below?p.y+rad+15:p.y-rad-9;
       var lbl=mk('text',{x:p.x,y:ly,'text-anchor':'middle','font-size':11,'font-weight':500,fill:'var(--text-mid)'});lbl.textContent=SHORT[a]||shortName(a);g.appendChild(lbl);
@@ -658,7 +654,7 @@ a{color:inherit;text-decoration:none;}
     pos.forEach(function(p){g.appendChild(mk('line',{x1:p.x,y1:p.y,x2:cx,y2:cy,stroke:'var(--amber)','stroke-width':1.2,'stroke-opacity':.22,'stroke-linecap':'round'}));});
     // small inward flowing dots
     var flow=mk('g',{}); g.appendChild(flow);
-    pos.forEach(function(p,i){flowDots(flow,p.x,p.y,cx,cy,(i%2?'var(--q-high)':'var(--amber-light)'),3,3);});
+    pos.forEach(function(p,i){flowDots(flow,p.x,p.y,cx,cy,(i%2?'var(--amber)':'var(--amber-light)'),3,3);});
     // tool logos evenly spaced along each line, between the bubble and the dashboard
     pos.forEach(function(p,i){
       var tools=inputs[i].tools||[], k=tools.length; if(!k)return;

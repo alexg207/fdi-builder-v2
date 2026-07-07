@@ -60,7 +60,7 @@ window.BUILD_DATA = {
       { stage: "Design the signals", tools: ["Exa", "Clay", "research"], bullets: [
         "Study the founder's memo, calls, and category",
         "Derive the four drivers that predict a ready buyer",
-        "Weight them for this founder (35 / 25 / 25 / 15)"
+        "Rank them by how strongly each predicts a ready buyer"
       ] },
       { stage: "Enrich & verify", tools: ["Clay", "SEC EDGAR", "Sumble", "LinkedIn"], bullets: [
         "Pull rooftops, brand mix, DMS, and current tooling",
@@ -68,9 +68,9 @@ window.BUILD_DATA = {
         "Tier and cite every claim to a primary source"
       ] },
       { stage: "Score", tools: ["Claude", "weighted model"], bullets: [
-        "Combine the four drivers on the founder's weights",
+        "Combine the four drivers on the founder's weights (35 / 25 / 25 / 15)",
         "One 0-to-100 score for every account",
-        "Tier comes straight from the score, every input cited"
+        "Order comes straight from the score, every input cited"
       ] },
       { stage: "Map the way in", tools: ["Affinity", "LinkedIn"], bullets: [
         "Cross-reference each account against Primary's network",
