@@ -17,6 +17,7 @@ window.BUILD_DATA = {
     tagline: "The Intelligence Layer for Blue-Collar Work",
     oneLine: "AI safety glasses that automate the auto mechanic's inspection, MPI video, advisor review, and quoting, hands-free.",
     // amber accent, matched to index.html / dashboard.html
+    hero3d: "lantern",   // named procedural 3D object for the opener (omit = neon-tube logo)
     logoSvg: '<svg viewBox="0 0 24 24"><circle cx="12" cy="2.9" r="1.3"/><path d="M12 4.2V5.6"/><path d="M6.4 9.4 12 5.4l5.6 4"/><path d="M7.6 9.4h8.8v9.2a1.2 1.2 0 0 1-1.2 1.2H8.8a1.2 1.2 0 0 1-1.2-1.2z"/><path d="M12 11.4v6.4"/><path d="M9 20.8h6"/></svg>'
     // themeAccent (optional): override the Ember default per founder, e.g.
     // themeAccent: { acc: "26 96% 58%", accSoft: "33 100% 68%", accDeep: "20 88% 46%", acc2: "262 80% 60%", bgh: "240 14% 5%", nh: "240 8%" }
