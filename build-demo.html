@@ -413,7 +413,7 @@ a{color:inherit;text-decoration:none;}
 .keyhint kbd{background:var(--glass);border:1px solid hsl(var(--nh) 20%);border-radius:4px;padding:1px 6px;font-size:9.5px;color:var(--text-muted);}
 
 /* ---------- theme dock (prototype chrome) ---------- */
-.theme-dock{position:fixed;left:22px;bottom:20px;z-index:11;display:flex;gap:6px;align-items:center;
+.theme-dock{position:fixed;left:22px;bottom:20px;z-index:11;display:none;gap:6px;align-items:center;
   background:var(--glass);border:1px solid var(--border);border-radius:999px;padding:5px 7px;
   }
 .theme-dock .tl{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-faint);margin:0 4px 0 6px;}
@@ -543,17 +543,12 @@ a{color:inherit;text-decoration:none;}
 <!-- ================= hero: 3D preview flattens on scroll ================= -->
 <section class="scene" data-scrub id="s-hero">
   <div class="pin"><div class="hero-inner hero">
-    <div class="hero-badge"><span class="pulse"></span> Live build · <b id="heroSub">Lantern</b> · FDI-114</div>
-    <h1><span class="grad">18,000 rooftops in.<br>The readiest buyers out.</span></h1>
-    <p class="sub">The machine we built around <b>Lantern</b> - custom signals, cited evidence, a readiness score on every account, and a warm path in. Scroll to watch it run.</p>
-    <div class="hero-stats">
-      <div class="hstat"><div class="n" data-count="18000">0</div><div class="l">rooftops scanned</div></div>
-      <div class="hstat"><div class="n" data-count="4">0</div><div class="l">custom signals</div></div>
-      <div class="hstat"><div class="n" data-count="10">0</div><div class="l">accounts curated</div></div>
-      <div class="hstat"><div class="n" data-count="9">0</div><div class="l">named buyers</div></div>
-    </div>
+    <div class="hero-badge"><span class="pulse"></span> <span id="heroBadge"></span></div>
+    <h1><span class="grad" id="heroTitle"></span></h1>
+    <p class="sub" id="heroSubP"></p>
+    <div class="hero-stats" id="heroStats"></div>
     <div class="preview-wrap"><div class="preview" id="preview">
-      <img src="./assets/dashboard-preview.png" alt="Lantern intelligence dashboard">
+      <img src="./assets/dashboard-preview.png" alt="Intelligence dashboard preview" id="previewImg">
       <div class="sheen" id="sheen"></div>
     </div></div>
   </div>
@@ -577,7 +572,7 @@ a{color:inherit;text-decoration:none;}
   <div class="pin"><div class="pin-inner">
     <div class="act-eyebrow rv" data-at="0.02"><span class="chip"><span class="n">02</span> Derive the ICP</span></div>
     <h2 class="act-title rv" data-at="0.02">First, define <span class="grad">exactly who buys.</span></h2>
-    <p class="act-narr rv" data-at="0.04">We read the memo, sit with the buyer calls, and study the category - then write the ICP down as five plain criteria we can check against any company in the market.</p>
+    <p class="act-narr rv" data-at="0.04" id="narrIcp"></p>
     <div class="icp-grid">
       <div>
         <div class="col-label rv" data-at="0.06">What we work from</div>
@@ -602,11 +597,11 @@ a{color:inherit;text-decoration:none;}
       </linearGradient>
     </defs></svg>
     <div class="act-eyebrow rv" data-at="0.02"><span class="chip"><span class="n">03</span> Build the signals</span></div>
-    <h2 class="act-title rv" data-at="0.02">Four signals that <span class="grad">predict a ready buyer.</span></h2>
-    <p class="act-narr rv" data-at="0.04">Standard firmographics only get you so far. We invent signals specific to Lantern's wedge and weight them by how strongly each one predicts a buyer who is ready now.</p>
+    <h2 class="act-title rv" data-at="0.02"><span id="signalsTitleN">Four</span> signals that <span class="grad">predict a ready buyer.</span></h2>
+    <p class="act-narr rv" data-at="0.04" id="narrSignals"></p>
     <div class="axes-row" id="axesRow"></div>
-    <div class="wow-note rv" data-at="0.64">
-      <div class="wn-eye">Why brand mix is the sharpest signal</div>
+    <div class="wow-note rv" data-at="0.64" id="wowNote">
+      <div class="wn-eye" id="wowEye"></div>
       <p id="wowBody"></p>
     </div>
   </div></div>
@@ -633,7 +628,7 @@ a{color:inherit;text-decoration:none;}
   <div class="pin"><div class="pin-inner">
     <div class="act-eyebrow rv" data-at="0.02"><span class="chip"><span class="n">05</span> Pull the evidence</span></div>
     <h2 class="act-title rv" data-at="0.02">Every claim, <span class="grad">pulled and cited.</span></h2>
-    <p class="act-narr rv" data-at="0.04">Rooftops, brand mix, DMS, inspection tooling, live service hiring, and the named buyer - every field backed by tiered sources. Nothing ships uncited.</p>
+    <p class="act-narr rv" data-at="0.04" id="narrEvidence"></p>
     <div class="ev-grid">
       <div>
         <div class="col-label rv" data-at="0.06">Pulled for each account</div>
@@ -656,8 +651,8 @@ a{color:inherit;text-decoration:none;}
   <div class="pin"><div class="pin-inner">
     <div class="act-eyebrow rv" data-at="0.02"><span class="chip"><span class="n">06</span> Score 0-100</span></div>
     <h2 class="act-title rv" data-at="0.02">Blended into <span class="grad">one readiness score.</span></h2>
-    <p class="act-narr rv" data-at="0.04">The four signals combine on Lantern's weights into a single 0-100 score. It sets the order you work the list - not whether an account belongs. Everything here already cleared the bar.</p>
-    <div class="formula rv" data-at="0.08"><b>0.35</b>·Warranty + <b>0.25</b>·Opportunity + <b>0.25</b>·Tooling + <b>0.15</b>·Hiring</div>
+    <p class="act-narr rv" data-at="0.04" id="narrScore"></p>
+    <div class="formula rv" data-at="0.08" id="formulaLine"></div>
     <div class="score-grid">
       <div class="hero-acct rv" data-at="0.14"><div class="hn" id="heroAcct"></div><div class="abars" id="abars"></div></div>
       <div class="score-arrow rv" data-at="0.44"><svg viewBox="0 0 24 24"><line x1="4" y1="12" x2="18" y2="12"/><polyline points="12,6 18,12 12,18"/></svg></div>
@@ -672,7 +667,7 @@ a{color:inherit;text-decoration:none;}
   <div class="pin"><div class="pin-inner">
     <div class="act-eyebrow rv" data-at="0.02"><span class="chip"><span class="n">07</span> Curate the shortlist</span></div>
     <h2 class="act-title rv" data-at="0.02">The accounts <span class="grad">worth walking into.</span></h2>
-    <p class="act-narr rv" data-at="0.04">The ten highest-quality accounts in the market - each one cleared every bar we set. Below them: the design partners already signed.</p>
+    <p class="act-narr rv" data-at="0.04" id="narrShortlist"></p>
     <div class="ranked" id="ranked"></div>
     <div class="partners rv" data-at="0.78"><div class="ph">Already signed &amp; onboarding</div><div class="prow" id="prow"></div></div>
   </div></div>
@@ -683,7 +678,7 @@ a{color:inherit;text-decoration:none;}
   <div class="pin"><div class="pin-inner">
     <div class="act-eyebrow rv" data-at="0.02"><span class="chip"><span class="n">08</span> Map the way in</span></div>
     <h2 class="act-title rv" data-at="0.02">And map the <span class="grad">warm paths in.</span></h2>
-    <p class="act-narr rv" data-at="0.04">Through Primary's network of partners, advisors, founders, and operators, we already hold warm introductions into much of the shortlist. Every line is a real relationship.</p>
+    <p class="act-narr rv" data-at="0.04" id="narrNetwork"></p>
     <div class="net-wrap rv" data-at="0.08">
       <svg class="net-svg" id="netSvg" viewBox="0 0 1160 600"><g id="netZoom"></g></svg>
       <div class="net-legend" id="netLegend"></div>
@@ -743,6 +738,8 @@ a{color:inherit;text-decoration:none;}
   qsa('button',dock).forEach(function(b){b.addEventListener('click',function(){setTheme(b.getAttribute('data-theme'));});});
   var tm=location.search.match(/[?&]theme=(\w+)/);
   setTheme(tm?tm[1]:'');
+  // theme dock is a design-review tool, not demo chrome — show with ?themes=1
+  if(/[?&]themes=1/.test(location.search))dock.style.display='flex';
 
   /* ---- particle field ---- */
   var canvas=document.getElementById('field'), ctx=canvas.getContext('2d'), pts=[];
@@ -769,12 +766,44 @@ a{color:inherit;text-decoration:none;}
   function tick(t){drawField(t);smoothScroll();frame();requestAnimationFrame(tick);}
   if(REDUCED)drawField(0);
 
-  /* ---- populate ---- */
+  /* ---- populate ----
+     Everything founder-specific comes from BUILD_DATA. `narration` carries the
+     per-founder copy; every read has a GENERIC fallback so the cinematic still
+     renders (founder-neutral) if a key is missing. */
+  var N=D.narration||{};
+  var NAME=D.founder.name;
+  var NUMWORD={1:'One',2:'Two',3:'Three',4:'Four',5:'Five',6:'Six'};
+  document.title='How we built '+NAME+'’s sales intelligence · Primary FDI';
   document.getElementById('brandMark').innerHTML=D.founder.logoSvg;
-  document.getElementById('brandName').textContent=D.founder.name;
-  document.getElementById('heroSub').textContent=D.founder.name;
+  document.getElementById('brandName').textContent=NAME;
+  document.getElementById('heroBadge').innerHTML='Live build · <b>'+NAME+'</b>'+(D.founder.fileNo?' · '+D.founder.fileNo:'');
+  document.getElementById('heroTitle').innerHTML=(N.heroTitle&&N.heroTitle.length===2?N.heroTitle:[fmt(D.scan.universe)+' '+D.scan.universeLabel+' in.','The readiest buyers out.']).join('<br>');
+  document.getElementById('heroSubP').innerHTML=N.heroSub||('The machine we built around <b>'+NAME+'</b> - custom signals, cited evidence, a readiness score on every account, and a warm path in. Scroll to watch it run.');
+  var heroStats=N.heroStats||[
+    {n:D.scan.universe,label:'scanned'},
+    {n:D.axes.length,label:'custom signals'},
+    {n:D.scan.curated,label:'accounts curated'},
+    {n:D.companies.filter(function(c){return c.contact;}).length,label:'named buyers'}];
+  document.getElementById('heroStats').innerHTML=heroStats.map(function(s){
+    return '<div class="hstat"><div class="n" data-count="'+s.n+'">0</div><div class="l">'+s.label+'</div></div>';}).join('');
   document.getElementById('processLead').textContent=D.process.lead;
   document.getElementById('processFoot').textContent=D.process.foot;
+  document.getElementById('narrIcp').textContent=N.icp||'We read the memo, sit with the buyer calls, and study the category - then write the ICP down as plain criteria we can check against any company in the market.';
+  document.getElementById('signalsTitleN').textContent=NUMWORD[D.axes.length]||String(D.axes.length);
+  document.getElementById('narrSignals').textContent=N.signals||('Standard firmographics only get you so far. We invent signals specific to '+NAME+'’s wedge and weight them by how strongly each one predicts a buyer who is ready now.');
+  document.getElementById('narrEvidence').textContent=N.evidence||'Every field on every account, each claim backed by tiered sources. Nothing ships uncited.';
+  document.getElementById('narrScore').textContent=N.score||('The '+(NUMWORD[D.axes.length]||D.axes.length).toString().toLowerCase()+' signals combine on '+NAME+'’s weights into a single 0-100 score. It sets the order you work the list - not whether an account belongs. Everything here already cleared the bar.');
+  document.getElementById('narrShortlist').textContent=N.shortlist||('The '+String(NUMWORD[D.scan.curated]||D.scan.curated).toLowerCase()+' highest-quality accounts in the market - each one cleared every bar we set. Below them: the design partners already signed.');
+  document.getElementById('narrNetwork').textContent=N.network||'Through Primary’s network of partners, advisors, founders, and operators, we already hold warm introductions into much of the shortlist. Every line is a real relationship.';
+  // score formula, rendered from the axes themselves
+  document.getElementById('formulaLine').innerHTML=D.axes.map(function(a){
+    return '<b>'+(a.weight/100).toFixed(2)+'</b>·'+(a.short||a.name.split(' ')[0]);}).join(' + ');
+  // optional per-founder theme accent (inline props override the theme blocks)
+  if(D.founder.themeAccent){
+    var TA=D.founder.themeAccent,TMAP={acc:'--acc',accSoft:'--acc-soft',accDeep:'--acc-deep',acc2:'--acc2',bgh:'--bgh',nh:'--nh'};
+    for(var tk in TMAP)if(TA[tk])document.documentElement.style.setProperty(TMAP[tk],TA[tk]);
+    refreshAccent();
+  }
 
   var LOGOS={'Exa Websets':'exa','Exa':'exa','Parallel':'parallel','Clay':'clay','SEC EDGAR':'sec','Sumble':'sumble','LinkedIn':'linkedin','Claude':'claude','Affinity':'affinity'};
   var pipe=document.getElementById('pipe');
@@ -801,43 +830,66 @@ a{color:inherit;text-decoration:none;}
   /* ring meters — circumference 2πr, r=45 in a 104 viewBox */
   var CIRC=2*Math.PI*45;
   document.getElementById('axesRow').innerHTML=D.axes.map(function(a,i){
-    return '<div class="axis-card rv'+(a.key==='warranty'?' wow':'')+'" data-at="'+(0.08+i*0.09).toFixed(2)+'">'+
+    return '<div class="axis-card rv'+(a.wowNote?' wow':'')+'" data-at="'+(0.08+i*0.09).toFixed(2)+'">'+
       '<div class="kind">'+a.kind+'</div>'+
       '<div class="ring"><svg viewBox="0 0 104 104">'+
         '<circle class="track" cx="52" cy="52" r="45"/>'+
         '<circle class="val" cx="52" cy="52" r="45" stroke-dasharray="'+CIRC+'" stroke-dashoffset="'+CIRC+'" data-w="'+a.weight+'" data-t="'+(0.14+i*0.09).toFixed(2)+'"/>'+
       '</svg><div class="cnum"><span class="v" data-w="'+a.weight+'">0</span><span class="u">% weight</span></div></div>'+
       '<div class="nm">'+a.name+'</div><div class="ms">'+a.measures+'</div></div>';}).join('');
-  document.getElementById('wowBody').innerHTML='Korean franchises (Hyundai, Genesis, Kia) and luxury-German franchises (BMW, Mercedes, Porsche, Audi) require photo and video proof of <b>every part</b> on a warranty claim, and they run the highest warranty volume. That documentation is exactly the work '+D.founder.name+' automates, so the groups heaviest in those brands feel the most pain. And a group’s franchise mix is public, so the readiest accounts show themselves before we ever place a call.';
+  // the wow note belongs to whichever axis carries one (usually the founder-specific WOW signal)
+  var wowAxis=null; D.axes.forEach(function(a){if(!wowAxis&&a.wowNote)wowAxis=a;});
+  if(wowAxis){
+    document.getElementById('wowEye').textContent=wowAxis.wowNote.eyebrow||('Why '+wowAxis.name+' is the sharpest signal');
+    document.getElementById('wowBody').innerHTML=wowAxis.wowNote.body;
+  }else{
+    document.getElementById('wowNote').style.display='none';
+  }
 
   /* ---- act 4: scan ---- */
   document.getElementById('scanQuery').textContent=D.scan.query;
   document.getElementById('scanL').textContent=D.scan.universeLabel;
   var dotGrid=document.getElementById('dotGrid');
-  var DOTN=140, MATCH_IDX={3:1,11:1,19:1,27:1,38:1,44:1,52:1,61:1,70:1,79:1,88:1,96:1,105:1,118:1,129:1};
+  // matches spread deterministically across the 140-dot grid (seeded jitter,
+  // no randomness — the demo plays identically every run)
+  var DOTN=140, MATCH_IDX={};
+  (function(){
+    var n=Math.max(1,Math.min(D.scan.matched,DOTN)), step=DOTN/n;
+    for(var mi=0;mi<n;mi++){
+      var idx=Math.min(DOTN-1,Math.round(mi*step+(mi*7)%5));
+      while(MATCH_IDX[idx]&&idx<DOTN-1)idx++;
+      MATCH_IDX[idx]=1;
+    }
+  })();
   for(var di=0;di<DOTN;di++){var dd=document.createElement('div');dd.className='dot';dotGrid.appendChild(dd);}
   var dots=qsa('.dot',dotGrid);
+  var FUN=D.scan.funnel||{};
   function farrow(at){return '<span class="fa rv" data-at="'+at+'"><svg viewBox="0 0 24 24"><line x1="4" y1="12" x2="18" y2="12"/><polyline points="12,6 18,12 12,18"/></svg></span>';}
   document.getElementById('funnel').innerHTML=
-    '<div class="fstat rv" data-at="0.56"><div class="n">'+fmt(D.scan.universe)+'</div><div class="l">rooftops</div></div>'+farrow('0.6')+
-    '<div class="fstat rv" data-at="0.62"><div class="n">'+fmt(D.scan.groups)+'</div><div class="l">multi-rooftop groups</div></div>'+farrow('0.66')+
-    '<div class="fstat match rv" data-at="0.68"><div class="n">'+D.scan.matched+'</div><div class="l">high-fit matches</div></div>';
+    '<div class="fstat rv" data-at="0.56"><div class="n">'+fmt(D.scan.universe)+'</div><div class="l">'+(FUN.universe||'in the universe')+'</div></div>'+farrow('0.6')+
+    '<div class="fstat rv" data-at="0.62"><div class="n">'+fmt(D.scan.groups)+'</div><div class="l">'+(FUN.groups||'clear the structural gate')+'</div></div>'+farrow('0.66')+
+    '<div class="fstat match rv" data-at="0.68"><div class="n">'+D.scan.matched+'</div><div class="l">'+(FUN.matched||'high-fit matches')+'</div></div>';
   document.getElementById('excludes').innerHTML=
-    '<div class="ex-lead rv" data-at="0.78">Excluded up front: the vendors who sell to dealers, not the dealers</div>'+
+    '<div class="ex-lead rv" data-at="0.78">'+(N.excludeLabel||'Excluded up front')+'</div>'+
     D.scan.excludes.map(function(e,i){return '<span class="ex" data-strike="'+(0.8+i*0.012).toFixed(3)+'">'+e+'</span>';}).join('');
 
   /* ---- act 5: evidence ---- */
   document.getElementById('evCols').innerHTML=D.enrichments.map(function(e,i){
     return '<div class="ev-col rv" data-at="'+(0.08+i*0.05).toFixed(2)+'"><span class="st">'+TICK+'</span><span class="f">'+e.field+'</span><span class="s">'+e.src+'</span></div>';}).join('');
-  var FEED=[['1','SEC','Penske 2024 Form 10-K - 72% premium-brand revenue'],
-    ['2','Automotive News','2026 Top 150 Dealership Groups'],
-    ['1','Case study','Dealertrack + Xtime MPI at Ed Napleton'],
-    ['2','Careers','Group 1 - 175 technician + 65 advisor reqs'],
-    ['2','CBT News','West Herr equipped ~650 techs with video MPI'],
-    ['1','Pon Holdings','indiGO ultra-luxury portfolio record'],
-    ['2','LinkedIn','Fixed Ops Director identified - 9 of 10 accounts'],
-    ['1','SEC','Group 1 2024 10-K - 145 US dealerships'],
-    ['2','Car Dealership Guy','Go Auto reaches 76 rooftops']];
+  // evidence feed: preferred source is BUILD_DATA.evidenceFeed (curated, real
+  // citations); fallback derives lines from the scored companies' own sources
+  var FEED=D.evidenceFeed;
+  if(!FEED||!FEED.length){
+    FEED=[];
+    D.companies.forEach(function(c){
+      (c.sources||[]).forEach(function(s){
+        if(FEED.length>=9)return;
+        var parts=String(s.t).split(/\s+[—-]\s+/);
+        FEED.push([String(s.tier||2),parts[0]||'Source',(parts[1]||s.t)]);
+      });
+    });
+    FEED=FEED.slice(0,9);
+  }
   document.getElementById('termBody').innerHTML=FEED.map(function(x,i){
     var cls=x[0]==='1'?'t1':'t2';
     return '<div class="tline2 rv" data-at="'+(0.22+i*0.07).toFixed(2)+'"><span class="tb '+cls+'">'+x[1]+'</span><span class="tx">'+x[2]+'</span></div>';}).join('')+
@@ -859,7 +911,7 @@ a{color:inherit;text-decoration:none;}
 
   /* ---- finale ---- */
   document.getElementById('finMark').innerHTML=D.founder.logoSvg;
-  document.getElementById('finSub').textContent='From '+fmt(D.scan.universe)+' rooftops down to a ranked shortlist - each account with its score, its evidence, and a warm path in where we have one.';
+  document.getElementById('finSub').textContent=N.finaleSub||('From '+fmt(D.scan.universe)+' '+D.scan.universeLabel+' down to a ranked shortlist - each account with its score, its evidence, and a warm path in where we have one.');
   document.getElementById('finAxes').innerHTML=D.axes.map(function(a){return '<span class="axis-mini">'+a.name+'</span>';}).join('');
   document.getElementById('replayBtn').addEventListener('click',function(){window.scrollTo(0,0);});
 
@@ -899,7 +951,14 @@ a{color:inherit;text-decoration:none;}
     var cx=580, cy=548, R1=185, TIERS=[308,372,434];
     var byName={}; D.companies.forEach(function(c){byName[c.name]=c;});
     var cons=D.network.connectors, also=D.network.alsoReaches||{};
-    var SHORT={"Penske Automotive Group":"Penske","Group 1 Automotive":"Group 1 Automotive","indiGO Auto Group":"indiGO","Fields Auto Group":"Fields","Krause Auto Group":"Krause","Ed Napleton Automotive Group":"Ed Napleton","Castle Automotive Group":"Castle","West Herr Auto Group":"West Herr","Go Auto":"Go Auto","AutoCanada":"AutoCanada"};
+    // display names: suffix-strip heuristic, with optional per-build overrides
+    // in network.shortNames for cases the heuristic gets wrong
+    var OVR=(D.network&&D.network.shortNames)||{};
+    function SHORTN(a){
+      if(OVR[a])return OVR[a];
+      var s=a.replace(/ (Automotive|Auto) Group$/i,'').replace(/ (Group|Automotive|Holdings|Technologies|Systems|Solutions|Inc\.?|Corp\.?|Co\.?)$/i,'');
+      return s||a;
+    }
     var palette={pp:'hsl(214 82% 64%)',aa:'hsl(190 70% 54%)',pf:'hsl(266 74% 70%)',on:'hsl(168 60% 52%)'};
     var pathsOf={};
     cons.forEach(function(c){ c.accounts.forEach(function(a){(pathsOf[a]=pathsOf[a]||[]).push(c);}); });
@@ -940,7 +999,7 @@ a{color:inherit;text-decoration:none;}
         var sn=mk('text',{x:px,y:py+4,'text-anchor':'middle','font-size':11,'font-weight':600,fill:'hsl(0 0% 97%)',style:'font-family:var(--mono)'});sn.textContent=co.score;g.appendChild(sn);
         var lbl=mk('text',{x:px,y:py-rad-9,'text-anchor':'middle','font-size':11,'font-weight':500,fill:'hsl(225 8% 80%)',
           stroke:'hsl(240 14% 5%)','stroke-width':4,'paint-order':'stroke','stroke-linejoin':'round'});
-        lbl.textContent=SHORT[a]||a;g.appendChild(lbl);
+        lbl.textContent=SHORTN(a);g.appendChild(lbl);
         g.addEventListener('mousemove',function(e){
           var via=paths.map(function(cc){return cc.role;}).join(', ')||'no mapped path yet';
           var html='<div class="tn">'+a+'</div><div class="tmeta">'+co.seg+' · score '+co.score+' / 100</div>'+
@@ -1137,7 +1196,7 @@ a{color:inherit;text-decoration:none;}
         }else{
           var cp=seg(sp,0.48,0.6);
           o.sn.textContent=fmt(Math.round(D.scan.universe-(D.scan.universe-D.scan.matched)*cp));
-          o.sl.textContent=cp>=1?'high-fit matches we research in depth':D.scan.universeLabel;
+          o.sl.textContent=cp>=1?(N.scanCollapsedLabel||'high-fit matches we research in depth'):D.scan.universeLabel;
         }
         o.exes.forEach(function(x){var on=p>=x.at;if(on!==x.on){x.on=on;x.el.classList.toggle('struck',on);}});
       }
@@ -1171,7 +1230,7 @@ a{color:inherit;text-decoration:none;}
     qsa('.ring .val').forEach(function(c){var w=parseFloat(c.getAttribute('data-w'));c.setAttribute('stroke-dashoffset',String(CIRC*(1-w/50)));});
     qsa('.cnum .v').forEach(function(v){v.textContent=v.getAttribute('data-w');});
     document.getElementById('scanN').textContent=fmt(D.scan.matched);
-    document.getElementById('scanL').textContent='high-fit matches we research in depth';
+    document.getElementById('scanL').textContent=(N.scanCollapsedLabel||'high-fit matches we research in depth');
     dots.forEach(function(d,i){d.classList.add(MATCH_IDX[i]?'match':'dim');});
     qsa('.ex').forEach(function(x){x.classList.add('struck');});
     qsa('.abar .fill').forEach(function(f){f.style.width=(parseFloat(f.getAttribute('data-v'))/5*100)+'%';});

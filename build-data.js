@@ -13,11 +13,50 @@ window.BUILD_DATA = {
   founder: {
     name: "Lantern",
     cobrand: "Primary",
+    fileNo: "FDI-114",
     tagline: "The Intelligence Layer for Blue-Collar Work",
     oneLine: "AI safety glasses that automate the auto mechanic's inspection, MPI video, advisor review, and quoting, hands-free.",
     // amber accent, matched to index.html / dashboard.html
     logoSvg: '<svg viewBox="0 0 24 24"><circle cx="12" cy="2.9" r="1.3"/><path d="M12 4.2V5.6"/><path d="M6.4 9.4 12 5.4l5.6 4"/><path d="M7.6 9.4h8.8v9.2a1.2 1.2 0 0 1-1.2 1.2H8.8a1.2 1.2 0 0 1-1.2-1.2z"/><path d="M12 11.4v6.4"/><path d="M9 20.8h6"/></svg>'
+    // themeAccent (optional): override the Ember default per founder, e.g.
+    // themeAccent: { acc: "26 96% 58%", accSoft: "33 100% 68%", accDeep: "20 88% 46%", acc2: "262 80% 60%", bgh: "240 14% 5%", nh: "240 8%" }
   },
+
+  // ---- per-founder copy for the cinematic (build-demo.html) ----------------
+  // Voice: confident analyst briefing the founder. Hyphens only, no em dashes.
+  // Hero frames QUALITY of accounts, not the count.
+  narration: {
+    heroTitle: ["18,000 rooftops in.", "The readiest buyers out."],
+    heroSub: "The machine we built around <b>Lantern</b> - custom signals, cited evidence, a readiness score on every account, and a warm path in. Scroll to watch it run.",
+    heroStats: [
+      { n: 18000, label: "rooftops scanned" },
+      { n: 4,     label: "custom signals" },
+      { n: 10,    label: "accounts curated" },
+      { n: 9,     label: "named buyers" }
+    ],
+    icp: "We read the memo, sit with the buyer calls, and study the category - then write the ICP down as five plain criteria we can check against any company in the market.",
+    signals: "Standard firmographics only get you so far. We invent signals specific to Lantern's wedge and weight them by how strongly each one predicts a buyer who is ready now.",
+    evidence: "Rooftops, brand mix, DMS, inspection tooling, live service hiring, and the named buyer - every field backed by tiered sources. Nothing ships uncited.",
+    score: "The four signals combine on Lantern's weights into a single 0-100 score. It sets the order you work the list - not whether an account belongs. Everything here already cleared the bar.",
+    shortlist: "The ten highest-quality accounts in the market - each one cleared every bar we set. Below them: the design partners already signed.",
+    network: "Through Primary's network of partners, advisors, founders, and operators, we already hold warm introductions into much of the shortlist. Every line is a real relationship.",
+    finaleSub: "From 18,000 rooftops down to a ranked shortlist - each account with its score, its evidence, and a warm path in where we have one.",
+    scanCollapsedLabel: "high-fit matches we research in depth",
+    excludeLabel: "Excluded up front: the vendors who sell to dealers, not the dealers"
+  },
+
+  // ---- evidence feed for the act-5 terminal (real citations only) ----------
+  evidenceFeed: [
+    ["1", "SEC", "Penske 2024 Form 10-K - 72% premium-brand revenue"],
+    ["2", "Automotive News", "2026 Top 150 Dealership Groups"],
+    ["1", "Case study", "Dealertrack + Xtime MPI at Ed Napleton"],
+    ["2", "Careers", "Group 1 - 175 technician + 65 advisor reqs"],
+    ["2", "CBT News", "West Herr equipped ~650 techs with video MPI"],
+    ["1", "Pon Holdings", "indiGO ultra-luxury portfolio record"],
+    ["2", "LinkedIn", "Fixed Ops Director identified - 9 of 10 accounts"],
+    ["1", "SEC", "Group 1 2024 10-K - 145 US dealerships"],
+    ["2", "Car Dealership Guy", "Go Auto reaches 76 rooftops"]
+  ],
 
   // ---- Act 1: derive the ICP -------------------------------------------------
   icp: {
@@ -84,14 +123,20 @@ window.BUILD_DATA = {
   axes: [
     { key: "warranty", name: "Warranty Burden", weight: 35, kind: "Founder-specific",
       measures: "The share of a group's brand mix that's Korean or luxury-German, where every part has to be photo-documented.",
-      five: "Majority Korean/luxury-German rooftops, or a cited OEM photo/video mandate." },
+      five: "Majority Korean/luxury-German rooftops, or a cited OEM photo/video mandate.",
+      // wowNote marks THE founder-specific WOW signal; the cinematic gives this
+      // card the big treatment and renders this note below the signal row.
+      wowNote: {
+        eyebrow: "Why brand mix is the sharpest signal",
+        body: "Korean franchises (Hyundai, Genesis, Kia) and luxury-German franchises (BMW, Mercedes, Porsche, Audi) require photo and video proof of <b>every part</b> on a warranty claim, and they run the highest warranty volume. That documentation is exactly the work Lantern automates, so the groups heaviest in those brands feel the most pain. And a group’s franchise mix is public, so the readiest accounts show themselves before we ever place a call."
+      } },
     { key: "scale", name: "Opportunity", weight: 25, kind: "Standard",
       measures: "How many rooftops the group runs, the size of the service footprint Lantern can deploy across.",
       five: "25+ rooftops." },
     { key: "tooling", name: "Tooling Gap", weight: 25, kind: "Founder-specific",
       measures: "How dated or absent their current inspection tooling is, and how open the seat is for Lantern.",
       five: "Legacy or no MPI-video tooling plus a cited dissatisfaction signal." },
-    { key: "hiring", name: "Service Hiring", weight: 15, kind: "Standard",
+    { key: "hiring", name: "Service Hiring", weight: 15, kind: "Standard", short: "Hiring",
       measures: "Open service-technician and fixed-ops roles, a live read on where demand is outrunning staff.",
       five: "10+ open service / fixed-ops roles." }
   ],
@@ -106,6 +151,7 @@ window.BUILD_DATA = {
     curated: 10,              // locked shortlist
     partners: 3,              // signed / onboarding design partners
     query: "Multi-location franchised dealer groups that run their own fixed-ops and carry a high-warranty brand mix.",
+    funnel: { universe: "rooftops", groups: "multi-rooftop groups", matched: "high-fit matches" },
     excludes: ["Plasma", "TruVideo", "XTime", "Cox Automotive", "DealerFX", "AutoPoint",
                "MyKaarma", "CDK", "Reynolds & Reynolds", "Tekion", "Dealertrack",
                "single-rooftop dealers", "used-car-only lots"]
@@ -233,6 +279,8 @@ window.BUILD_DATA = {
   network: {
     hub: "Primary",
     illustrative: true,
+    // display-name overrides where the suffix-strip heuristic reads wrong
+    shortNames: { "Group 1 Automotive": "Group 1 Automotive" },
     // Each connector OWNS a clean set of accounts (its sector on the map). This is a
     // partition, one primary warm path per account, so the layout never crosses.
     connectors: [
