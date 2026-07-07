@@ -949,13 +949,11 @@ a{color:inherit;text-decoration:none;}
         g.addEventListener('mouseleave',tipHide);
         zoomG.appendChild(g);
       });
-      // connector node, role label offset to the outside so it never sits on an edge
+      // connector node: initials only — roles live in the color legend +
+      // hover tooltip, so no label can collide with nodes or edges
       var cg=mk('g',{class:'net-node'});
       cg.appendChild(mk('circle',{cx:ccx,cy:ccy,r:23,fill:'hsl(240 10% 12%)',stroke:col,'stroke-width':2.4}));
       var it=mk('text',{x:ccx,y:ccy+4,'text-anchor':'middle','font-size':11.5,'font-weight':700,fill:col});it.textContent=initials(c.role);cg.appendChild(it);
-      var side=Math.cos(centerA);
-      var anchor=side<-0.001?'end':'start', lx=ccx+(side<-0.001?-31:31);
-      var rl=mk('text',{x:lx,y:ccy+4,'text-anchor':anchor,'font-size':11.5,'font-weight':600,fill:col});rl.textContent=c.role;cg.appendChild(rl);
       cg.addEventListener('mousemove',function(e){tipShow(e,'<div class="tn">'+c.role+'</div><div class="tby">Warm paths into <b>'+c.accounts.length+'</b> shortlist accounts</div>');});
       cg.addEventListener('mouseleave',tipHide);
       zoomG.appendChild(cg);
