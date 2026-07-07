@@ -16,7 +16,7 @@ showing them how we creatively problem-solve, not just handing over a black box.
 ## The flow
 
 ```
-index.html  ──[ Watch how we built this ]──▶  build.html  ──▶  dashboard.html
+index.html (the scroll walkthrough — two-beat founder opener, then the acts)  ──▶  dashboard.html
  (landing)          (the new cinematic)          (the product)
 ```
 

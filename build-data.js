@@ -26,6 +26,8 @@ window.BUILD_DATA = {
   // Voice: confident analyst briefing the founder. Hyphens only, no em dashes.
   // Hero frames QUALITY of accounts, not the count.
   narration: {
+    // beat 1 of the opener: the founder's product headline (accent spans allowed)
+    introHeadline: "The world’s hardest-working trades have no digital footprint. Lantern changes that, starting with <span class=\"accent\">AI safety glasses</span> that automate the auto mechanic’s inspection, MPI video, advisor review, and quoting, hands-free.",
     heroTitle: ["18,000 rooftops in.", "The readiest buyers out."],
     heroSub: "The machine we built around <b>Lantern</b> - custom signals, cited evidence, a readiness score on every account, and a warm path in. Scroll to watch it run.",
     heroStats: [
