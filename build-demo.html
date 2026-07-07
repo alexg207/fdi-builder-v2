@@ -435,6 +435,16 @@ a{color:inherit;text-decoration:none;}
   .axis-card .ms{min-height:0;font-size:11px;}
   .wow-note{margin-top:16px;padding:13px 20px;}
   .wow-note p{font-size:12.5px;}
+  /* shortlist: 10 rows + 3 partner cards must fit the pin */
+  .ranked{gap:4px;}
+  .rrow{padding:6px 14px;}
+  .rrow .nm2{font-size:12.5px;}
+  .rrow .sc{font-size:13px;}
+  .partners{margin-top:12px;}
+  .partners .ph{margin-bottom:8px;}
+  .prow{flex-wrap:nowrap;justify-content:center;}
+  .pcard{min-width:0;flex:0 1 250px;padding:9px 13px;}
+  .pcard .pnote{font-size:10.5px;}
 }
 /* short viewports: shrink hero so headline + stats + preview all fit the pin */
 @media (max-height:900px){
@@ -756,7 +766,7 @@ a{color:inherit;text-decoration:none;}
     });
   }
   // master loop: particles + scrub smoothing share one rAF (started after SECS init below)
-  function tick(t){drawField(t);frame();requestAnimationFrame(tick);}
+  function tick(t){drawField(t);smoothScroll();frame();requestAnimationFrame(tick);}
   if(REDUCED)drawField(0);
 
   /* ---- populate ---- */
@@ -882,69 +892,85 @@ a{color:inherit;text-decoration:none;}
     if(netRendered)return; netRendered=true;
     var svgEl=document.getElementById('netSvg'), zoomG=document.getElementById('netZoom');
     zoomG.innerHTML='';
-    var cx=580, cy=300, Rx=400, Ry=235, R1x=205, R1y=128;
+    // fan layout, per the Lyric Network Map: Primary sits bottom-center,
+    // connectors fan upward on an inner ring, accounts sit on tiered orbit
+    // arcs above their connector — the graph reads bottom-up as a hierarchy
+    // and no edge ever crosses another sector.
+    var cx=580, cy=548, R1=185, TIERS=[308,372,434];
     var byName={}; D.companies.forEach(function(c){byName[c.name]=c;});
     var cons=D.network.connectors, also=D.network.alsoReaches||{};
     var SHORT={"Penske Automotive Group":"Penske","Group 1 Automotive":"Group 1 Automotive","indiGO Auto Group":"indiGO","Fields Auto Group":"Fields","Krause Auto Group":"Krause","Ed Napleton Automotive Group":"Ed Napleton","Castle Automotive Group":"Castle","West Herr Auto Group":"West Herr","Go Auto":"Go Auto","AutoCanada":"AutoCanada"};
     var palette={pp:'hsl(214 82% 64%)',aa:'hsl(190 70% 54%)',pf:'hsl(266 74% 70%)',on:'hsl(168 60% 52%)'};
-    var sectorAng={pp:-Math.PI/2,pf:0,on:Math.PI/2,aa:Math.PI};
-    var pos={}, pathsOf={}, hub={};
+    var pathsOf={};
     cons.forEach(function(c){ c.accounts.forEach(function(a){(pathsOf[a]=pathsOf[a]||[]).push(c);}); });
     Object.keys(also).forEach(function(a){ also[a].forEach(function(k){ var c=cons.filter(function(x){return x.key===k;})[0]; if(c)(pathsOf[a]=pathsOf[a]||[]).push(c); }); });
-    cons.forEach(function(c){
-      var base=sectorAng[c.key]||0;
-      hub[c.key]={x:cx+R1x*Math.cos(base),y:cy+R1y*Math.sin(base),color:palette[c.key]||'hsl(214 80% 64%)'};
-      var n=c.accounts.length, fan=n>=3?0.62:(n===2?0.42:0);
-      c.accounts.forEach(function(a,j){var aa=base-fan+(n>1?2*fan*(j/(n-1)):0);pos[a]={x:cx+Rx*Math.cos(aa),y:cy+Ry*Math.sin(aa),a:aa};});
-    });
+    // fan shares sized by how many accounts each connector carries
+    var counts=cons.map(function(c){return c.accounts.length;});
+    var total=counts.reduce(function(s,v){return s+v;},0)||1;
+    var FAN=2.5, minS=0.42, extra=Math.max(0.2,FAN-cons.length*minS);
+    var shares=counts.map(function(k){return minS+extra*(k/total);});
+    var fanTot=shares.reduce(function(s,v){return s+v;},0);
     var flow=mk('g',{}); zoomG.appendChild(flow);
-    zoomG.appendChild(mk('ellipse',{cx:cx,cy:cy,rx:Rx,ry:Ry,fill:'none',stroke:'hsl(0 0% 60%)','stroke-opacity':.14}));
-    cons.forEach(function(c){
-      var h=hub[c.key];
-      zoomG.appendChild(mk('line',{x1:cx,y1:cy,x2:h.x,y2:h.y,stroke:h.color,'stroke-width':2.4,'stroke-opacity':.55,'stroke-linecap':'round'}));
-      flowDots(flow,cx,cy,h.x,h.y,h.color,2);
-      c.accounts.forEach(function(a){var p=pos[a];if(!p)return;zoomG.appendChild(mk('line',{x1:h.x,y1:h.y,x2:p.x,y2:p.y,stroke:h.color,'stroke-width':1.8,'stroke-opacity':.36,'stroke-linecap':'round'}));});
-    });
-    Object.keys(pos).forEach(function(a){
-      var co=byName[a], p=pos[a]; if(!co)return;
-      var paths=pathsOf[a]||[], multi=paths.length>1;
-      var col=scoreTone(co.score), rad=Math.max(14,Math.min(30,14+(co.score-70)/23*16));
-      var g=mk('g',{class:'net-node'});
-      if(multi) g.appendChild(mk('circle',{cx:p.x,cy:p.y,r:rad+5,fill:'none',stroke:'hsl('+accHS()+' 70%)','stroke-width':1.7,'stroke-opacity':.9}));
-      g.appendChild(mk('circle',{cx:p.x,cy:p.y,r:rad,fill:scoreFillSvg(co.score),stroke:col,'stroke-width':2}));
-      var sn=mk('text',{x:p.x,y:p.y+4,'text-anchor':'middle','font-size':11,'font-weight':600,fill:'hsl(0 0% 97%)',style:'font-family:var(--mono)'});sn.textContent=co.score;g.appendChild(sn);
-      var below=Math.sin(p.a)>=-0.15, ly=below?p.y+rad+15:p.y-rad-9;
-      var lbl=mk('text',{x:p.x,y:ly,'text-anchor':'middle','font-size':11,'font-weight':500,fill:'hsl(225 8% 76%)'});lbl.textContent=SHORT[a]||a;g.appendChild(lbl);
-      g.addEventListener('mousemove',function(e){
-        var via=paths.map(function(c){return c.role;}).join(', ')||'no mapped path yet';
-        var html='<div class="tn">'+a+'</div><div class="tmeta">'+co.seg+' · score '+co.score+' / 100</div>'+
-          (co.contact?'<div class="tby">Buyer: <b>'+co.contact.name+'</b><br>'+co.contact.title+'</div>':'')+
-          '<div class="tby">Warm path'+(multi?'s ('+paths.length+')':'')+' via <b>'+via+'</b></div>';
-        tipShow(e,html);
+    // faint orbit arcs behind each account tier (the Lyric signature)
+    function arcPath(r,a0,a1){var x0=cx+r*Math.cos(a0),y0=cy+r*Math.sin(a0),x1=cx+r*Math.cos(a1),y1=cy+r*Math.sin(a1);
+      return 'M'+x0.toFixed(1)+' '+y0.toFixed(1)+' A'+r+' '+r+' 0 '+((a1-a0)>Math.PI?1:0)+' 1 '+x1.toFixed(1)+' '+y1.toFixed(1);}
+    TIERS.forEach(function(r){zoomG.appendChild(mk('path',{d:arcPath(r,-Math.PI/2-fanTot/2-0.06,-Math.PI/2+fanTot/2+0.06),fill:'none',stroke:'hsl(0 0% 60%)','stroke-opacity':.13,'stroke-width':1}));});
+    var cursorA=-fanTot/2;
+    cons.forEach(function(c,ci){
+      var wStart=cursorA,wEnd=cursorA+shares[ci];cursorA=wEnd;
+      var centerA=-Math.PI/2+(wStart+wEnd)/2;
+      var col=palette[c.key]||'hsl(214 80% 64%)';
+      var ccx=cx+R1*Math.cos(centerA),ccy=cy+R1*Math.sin(centerA);
+      zoomG.appendChild(mk('line',{x1:cx,y1:cy,x2:ccx,y2:ccy,stroke:col,'stroke-width':2.4,'stroke-opacity':.5,'stroke-linecap':'round'}));
+      flowDots(flow,ccx,ccy,cx,cy,col,2);
+      var pad=Math.min(0.12,shares[ci]*0.14);
+      c.accounts.forEach(function(a,j){
+        var co=byName[a]; if(!co)return;
+        var t=c.accounts.length>1?j/(c.accounts.length-1):0.5;
+        var ang=-Math.PI/2+wStart+pad+(shares[ci]-2*pad)*t, r=TIERS[j%TIERS.length];
+        var px=cx+r*Math.cos(ang),py=cy+r*Math.sin(ang);
+        var paths=pathsOf[a]||[], multi=paths.length>1;
+        // edge thickness tracks readiness, like Lyric's warmth edges
+        zoomG.appendChild(mk('line',{x1:px,y1:py,x2:ccx,y2:ccy,stroke:col,'stroke-width':Math.max(1.2,co.score/38),'stroke-opacity':.32,'stroke-linecap':'round'}));
+        flowDots(flow,px,py,ccx,ccy,col,1);
+        var rad=Math.max(15,Math.min(28,15+(co.score-70)/23*13));
+        var g=mk('g',{class:'net-node'});
+        if(multi) g.appendChild(mk('circle',{cx:px,cy:py,r:rad+5,fill:'none',stroke:'hsl('+accHS()+' 70%)','stroke-width':1.6,'stroke-opacity':.9}));
+        g.appendChild(mk('circle',{cx:px,cy:py,r:rad,fill:scoreFillSvg(co.score),stroke:scoreTone(co.score),'stroke-width':2}));
+        var sn=mk('text',{x:px,y:py+4,'text-anchor':'middle','font-size':11,'font-weight':600,fill:'hsl(0 0% 97%)',style:'font-family:var(--mono)'});sn.textContent=co.score;g.appendChild(sn);
+        var lbl=mk('text',{x:px,y:py-rad-9,'text-anchor':'middle','font-size':11,'font-weight':500,fill:'hsl(225 8% 76%)'});lbl.textContent=SHORT[a]||a;g.appendChild(lbl);
+        g.addEventListener('mousemove',function(e){
+          var via=paths.map(function(cc){return cc.role;}).join(', ')||'no mapped path yet';
+          var html='<div class="tn">'+a+'</div><div class="tmeta">'+co.seg+' · score '+co.score+' / 100</div>'+
+            (co.contact?'<div class="tby">Buyer: <b>'+co.contact.name+'</b><br>'+co.contact.title+'</div>':'')+
+            '<div class="tby">Warm path'+(multi?'s ('+paths.length+')':'')+' via <b>'+via+'</b></div>';
+          tipShow(e,html);
+        });
+        g.addEventListener('mouseleave',tipHide);
+        zoomG.appendChild(g);
       });
-      g.addEventListener('mouseleave',tipHide);
-      zoomG.appendChild(g);
+      // connector node, role label offset to the outside so it never sits on an edge
+      var cg=mk('g',{class:'net-node'});
+      cg.appendChild(mk('circle',{cx:ccx,cy:ccy,r:23,fill:'hsl(240 10% 12%)',stroke:col,'stroke-width':2.4}));
+      var it=mk('text',{x:ccx,y:ccy+4,'text-anchor':'middle','font-size':11.5,'font-weight':700,fill:col});it.textContent=initials(c.role);cg.appendChild(it);
+      var side=Math.cos(centerA);
+      var anchor=side<-0.001?'end':'start', lx=ccx+(side<-0.001?-31:31);
+      var rl=mk('text',{x:lx,y:ccy+4,'text-anchor':anchor,'font-size':11.5,'font-weight':600,fill:col});rl.textContent=c.role;cg.appendChild(rl);
+      cg.addEventListener('mousemove',function(e){tipShow(e,'<div class="tn">'+c.role+'</div><div class="tby">Warm paths into <b>'+c.accounts.length+'</b> shortlist accounts</div>');});
+      cg.addEventListener('mouseleave',tipHide);
+      zoomG.appendChild(cg);
     });
-    cons.forEach(function(c){
-      var h=hub[c.key];
-      var g=mk('g',{class:'net-node'});
-      g.appendChild(mk('circle',{cx:h.x,cy:h.y,r:24,fill:'hsl(240 10% 12%)',stroke:h.color,'stroke-width':2.6}));
-      var t=mk('text',{x:h.x,y:h.y+4,'text-anchor':'middle','font-size':12,'font-weight':700,fill:h.color});t.textContent=initials(c.role);g.appendChild(t);
-      var base=sectorAng[c.key]||0, rAbove=Math.sin(base)<-0.3, rly=rAbove?h.y-24-11:h.y+24+16;
-      var rl=mk('text',{x:h.x,y:rly,'text-anchor':'middle','font-size':11.5,'font-weight':600,fill:h.color});rl.textContent=c.role;g.appendChild(rl);
-      g.addEventListener('mousemove',function(e){tipShow(e,'<div class="tn">'+c.role+'</div><div class="tby">Warm paths into <b>'+c.accounts.length+'</b> shortlist accounts</div>');});
-      g.addEventListener('mouseleave',tipHide);
-      zoomG.appendChild(g);
-    });
-    zoomG.appendChild(mk('circle',{cx:cx,cy:cy,r:44,fill:'hsl(240 10% 12%)',stroke:'hsl('+accHS()+' 58%)','stroke-width':2.6,style:'filter:drop-shadow(0 0 24px hsl('+accHS()+' 58% / .42))'}));
-    var lt=mk('text',{x:cx,y:cy+2,'text-anchor':'middle','font-size':18,'font-weight':700,fill:'hsl(0 0% 97%)',style:'font-family:var(--display)'});lt.textContent=D.network.hub||'Primary';zoomG.appendChild(lt);
-    var lp=mk('text',{x:cx,y:cy+18,'text-anchor':'middle','font-size':9,'font-weight':500,fill:'hsl(225 6% 59%)'});lp.textContent='the network';zoomG.appendChild(lp);
-    // legend
+    // Primary, bottom-center
+    zoomG.appendChild(mk('circle',{cx:cx,cy:cy,r:42,fill:'hsl(240 10% 12%)',stroke:'hsl('+accHS()+' 58%)','stroke-width':2.6,style:'filter:drop-shadow(0 0 24px hsl('+accHS()+' 58% / .42))'}));
+    var lt=mk('text',{x:cx,y:cy+1,'text-anchor':'middle','font-size':17,'font-weight':700,fill:'hsl(0 0% 97%)',style:'font-family:var(--display)'});lt.textContent=D.network.hub||'Primary';zoomG.appendChild(lt);
+    var lp=mk('text',{x:cx,y:cy+17,'text-anchor':'middle','font-size':9,'font-weight':500,fill:'hsl(225 6% 59%)'});lp.textContent='the network';zoomG.appendChild(lp);
+    // legend: one row per connector color + account encoding
     document.getElementById('netLegend').innerHTML=
-      '<div class="lg"><span class="ring2" style="border-color:hsl(214 82% 64%)"></span> Primary connector</div>'+
-      '<div class="lg lgh" style="margin-top:5px">Accounts</div>'+
-      '<div class="lg"><span class="sw2" style="background:linear-gradient(90deg,'+scoreToneD(74)+','+scoreTone(93)+')"></span> Warmer = higher readiness</div>'+
-      '<div class="lg"><span class="ring2"></span> Multiple warm paths</div>';
+      '<div class="lg lgh">Warm paths via</div>'+
+      cons.map(function(c){return '<div class="lg"><span class="sw2" style="background:'+(palette[c.key]||'')+'"></span> '+c.role+'</div>';}).join('')+
+      '<div class="lg lgh" style="margin-top:6px">Accounts</div>'+
+      '<div class="lg"><span class="sw2" style="background:linear-gradient(90deg,'+scoreToneD(74)+','+scoreTone(93)+')"></span> Warmer = readier</div>'+
+      '<div class="lg"><span class="ring2"></span> 2+ warm paths</div>';
     // drag to pan only (no wheel — it belongs to the page scroll)
     var view={x:0,y:0}, drag=null, svgEl2=svgEl;
     function apply(){zoomG.setAttribute('transform','translate('+view.x+' '+view.y+')');}
@@ -1001,6 +1027,7 @@ a{color:inherit;text-decoration:none;}
   /* cached per-scene state — zero DOM queries per frame */
   var SECS=scenes.map(function(sec){
     var o={el:sec,id:sec.id,scrub:sec.hasAttribute('data-scrub'),sp:0,
+      inner:sec.querySelector('.pin-inner')||sec.querySelector('.hero-inner'),
       rvs:qsa('.rv',sec).map(function(el){return {el:el,at:parseFloat(el.getAttribute('data-at')||'0'),on:null};})};
     if(sec.id==='s-hero')o.cue=sec.querySelector('.scroll-cue');
     if(sec.id==='s-process')o.stages=qsa('.pstage',sec).map(function(st){return {el:st,lit:parseFloat(st.getAttribute('data-lit')),on:null};});
@@ -1018,6 +1045,29 @@ a{color:inherit;text-decoration:none;}
     return o;
   });
   var activeIdx=0, lastActive=-1;
+
+  /* ---- smooth wheel (Lenis-style): wheel deltas ease into real scroll,
+     so travel between pinned scenes glides instead of stepping ---- */
+  var curY=null, targetY=0;
+  function maxScroll(){return Math.max(0,document.documentElement.scrollHeight-window.innerHeight);}
+  if(!REDUCED){
+    window.addEventListener('wheel',function(e){
+      if(e.ctrlKey)return;                      // pinch-zoom stays native
+      e.preventDefault();
+      var d=e.deltaY;
+      if(e.deltaMode===1)d*=33; else if(e.deltaMode===2)d*=window.innerHeight;
+      if(curY===null){curY=window.scrollY;targetY=curY;}
+      targetY=clamp(targetY+d,0,maxScroll());
+    },{passive:false});
+  }
+  function smoothScroll(){
+    if(curY===null){curY=targetY=window.scrollY;return;}
+    if(Math.abs(window.scrollY-curY)>2){curY=targetY=window.scrollY;return;}  // scrollbar / keyboard jump: adopt
+    targetY=clamp(targetY,0,maxScroll());
+    curY+=(targetY-curY)*0.12;
+    if(Math.abs(targetY-curY)<0.4)curY=targetY;
+    window.scrollTo(0,curY);
+  }
 
   function frame(){
     var vh=window.innerHeight;
@@ -1037,6 +1087,13 @@ a{color:inherit;text-decoration:none;}
       // lerp the scrub value so wheel steps become continuous motion
       o.sp+=(p-o.sp)*0.16; if(Math.abs(p-o.sp)<0.0004)o.sp=p;
       var sp=o.sp;
+      // boundary crossfade: content eases in as the scene arrives, fades +
+      // shrinks slightly as it leaves — kills the hard cut between pins
+      if(o.inner){
+        var enterT=clamp(1-r.top/vh,0,1), exitT=clamp(1-r.bottom/vh,0,1);
+        o.inner.style.opacity=(0.1+0.9*enterT)*(1-0.88*exitT);
+        o.inner.style.transform=exitT>0.001?'scale('+(1-0.05*exitT)+')':'none';
+      }
       o.rvs.forEach(function(rv){var on=p>=rv.at;if(on!==rv.on){rv.on=on;rv.el.classList.toggle('on',on);}});
 
       if(o.id==='s-hero'){
@@ -1131,7 +1188,8 @@ a{color:inherit;text-decoration:none;}
     function step(ts){
       if(t0===null)t0=ts;
       var p=clamp((ts-t0)/dur,0,1), e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
-      window.scrollTo(0,fromY+(toY-fromY)*e);
+      curY=targetY=fromY+(toY-fromY)*e;
+      window.scrollTo(0,curY);
       if(p<1)playing=requestAnimationFrame(step); else playing=null;
     }
     playing=requestAnimationFrame(step);
