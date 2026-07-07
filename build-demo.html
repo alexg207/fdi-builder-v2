@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How we built Lantern's sales intelligence · Primary FDI</title>
+<title>How we built this sales intelligence · Primary FDI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -384,11 +384,11 @@ a{color:inherit;text-decoration:none;}
 
 /* ---------- finale ---------- */
 .fin-mk{width:100px;height:100px;margin:0 auto 30px;border-radius:24px;background:var(--glass-2);border:1px solid var(--border-hot);
-  display:flex;align-items:center;justify-content:center;animation:lantern 4.2s ease-in-out infinite;
+  display:flex;align-items:center;justify-content:center;animation:markGlow 4.2s ease-in-out infinite;
   }
 .fin-mk svg{width:60px;height:60px;stroke:var(--amber);stroke-width:1.4;fill:none;stroke-linecap:round;stroke-linejoin:round;
   filter:drop-shadow(0 0 14px hsl(var(--acc) / .55));}
-@keyframes lantern{0%,100%{box-shadow:0 0 0 1px hsl(var(--acc) / .18),0 0 52px hsl(var(--acc) / .18);}50%{box-shadow:0 0 0 1px hsl(var(--acc) / .32),0 0 96px hsl(var(--acc) / .34);}}
+@keyframes markGlow{0%,100%{box-shadow:0 0 0 1px hsl(var(--acc) / .18),0 0 52px hsl(var(--acc) / .18);}50%{box-shadow:0 0 0 1px hsl(var(--acc) / .32),0 0 96px hsl(var(--acc) / .34);}}
 .axes-mini{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:30px;}
 .axis-mini{font-family:var(--mono);font-size:10.5px;color:var(--text-mid);background:hsl(var(--acc) / .09);border:1px solid hsl(var(--acc) / .26);border-radius:7px;padding:5px 12px;}
 .replay{font-size:13px;color:var(--text-faint);cursor:pointer;background:none;border:none;transition:color .15s;margin-top:18px;font-family:var(--sans);}
@@ -533,7 +533,7 @@ a{color:inherit;text-decoration:none;}
 <header class="topbar">
   <div class="brand">
     <div class="logo-mark" id="brandMark"></div>
-    <span class="nm"><span id="brandName">Lantern</span><span class="x">×</span><span class="pv">Primary</span></span>
+    <span class="nm"><span id="brandName"></span><span class="x">×</span><span class="pv">Primary</span></span>
   </div>
   <a class="skip" href="./dashboard.html">Skip to dashboard <svg viewBox="0 0 24 24"><polyline points="9,6 15,12 9,18"/></svg></a>
 </header>
@@ -548,7 +548,7 @@ a{color:inherit;text-decoration:none;}
     <p class="sub" id="heroSubP"></p>
     <div class="hero-stats" id="heroStats"></div>
     <div class="preview-wrap"><div class="preview" id="preview">
-      <img src="./assets/dashboard-preview.png" alt="Intelligence dashboard preview" id="previewImg">
+      <img src="./assets/dashboard-preview.png" alt="Intelligence dashboard preview" id="previewImg" onerror="this.closest('.preview-wrap').style.display='none'">
       <div class="sheen" id="sheen"></div>
     </div></div>
   </div>
@@ -715,6 +715,7 @@ a{color:inherit;text-decoration:none;}
 <script>
 (function(){
   var D=window.BUILD_DATA;
+  if(!D){document.body.innerHTML='<div style="font-family:monospace;color:#999;padding:80px 40px;text-align:center">build-data.js missing or failed to parse. Generate it from build-data-template.js (see TEMPLATE_GUIDE.md Section 16).</div>';return;}
   var REDUCED=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var TICK='<svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>';
   function qsa(s,el){return Array.prototype.slice.call((el||document).querySelectorAll(s));}
